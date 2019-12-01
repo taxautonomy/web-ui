@@ -1,18 +1,40 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import TaxForm from './components/TaxForm'
+
 import './App.css';
+import TaxTable from './components/TaxTable';
+import axios from 'axios';
+import Config from './Config'
 
 class App extends Component {
+  baseUrl = new Config().getApiHost();
+  state = {
+    schemes: ["2018-2019",
+      "2019-2020"],
+    selectedScheme: "",
+    salary: null,
+    taxInfo: null
+  }
+
+  componentDidMount() {
+   }
+
+  taxFormInputChanged = (scheme, salary) => {
+    axios.get(this.baseUrl + '/api/paye/' + scheme + '/' + salary)
+      .then(res => this.setState({ taxInfo: res.data }))
+  }
   render() {
     return (
       <div className="App">
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to React</h2>
         </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <div>
+          <TaxForm schemes={this.state.schemes} inputChanged={this.taxFormInputChanged} />
+          {this.state.taxInfo !== null &&
+            <TaxTable taxInfo={this.state.taxInfo} />
+          }
+        </div>
       </div>
     );
   }

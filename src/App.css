@@ -19,6 +19,36 @@
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.table {
+  display: table;
+  padding: 5px;
+}
+
+.tableRow {
+  display: table-row;
+}
+
+.tableHeading {
+  display: table-header-group;
+}
+
+.tableBody {
+  display: table-row-group;
+}
+
+.tableFoot {
+  display: table-footer-group;
+}
+
+.tableCell, .tableHead {
+  display: table-cell;
+  padding: 5px;
 }
