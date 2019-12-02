@@ -9,12 +9,14 @@ class TaxForm extends Component {
   }
 
   onSalaryChange = (e) => {
-    this.setState({ salary: e.target.value }, this.raiseInputChanged);
+    this.setState({ salary: e.target.value });
   }
   onSchemeChange = (e) => {
-    this.setState({ scheme: e.target.value }, this.raiseInputChanged);
+    this.setState({ scheme: e.target.value });
   }
-
+  onSubmit = (e) => {
+    this.props.inputChanged(this.state.scheme, this.state.salary);
+  }
   raiseInputChanged(){
     this.props.inputChanged(this.state.scheme, this.state.salary);
   }
@@ -43,7 +45,7 @@ class TaxForm extends Component {
             </div>
             <div className="tableRow">
               <div className="tableCell"></div>
-              <div className="tableCell">&nbsp;</div>
+              <div className="tableCell"><button onClick={this.onSubmit}>Calculate Tax</button></div>
             </div>
           </div>
         </div>

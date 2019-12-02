@@ -9,9 +9,9 @@
 
 .App-header {
   background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+  height: 80px;
+  padding: 5px;
+  color: rgb(141, 141, 141);
 }
 
 .App-intro {
@@ -51,4 +51,8 @@
 .tableCell, .tableHead {
   display: table-cell;
   padding: 5px;
+}
+
+.rightAlign{
+  text-align: right;
 }

@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import TaxSlab from './TaxSlab';
+import NumberFormat from 'react-number-format'
 
 export default class TaxTable extends Component {
 
@@ -6,40 +8,39 @@ export default class TaxTable extends Component {
         const { salary, tax_total, slabs } = this.props.taxInfo;
 
         return (
-            <div className="table">
-                <div className="tableHeading">
-                    <div className="tableRow">
-                        <div className="tableHead">
-                            Monthly Salary:
+            <div>
+                <div className="table">
+                    <div className="tableHeading">
+                        <div className="tableRow">
+                            <div className="tableHead">
+                                Monthly Salary:
                         </div>
-                        <div className="tableCell">
-                            {salary}
+                            <div className="tableCell">
+                                <NumberFormat thousandSeparator={true} displayType={'text'} value={salary} decimalScale={2} fixedDecimalScale={true} />
+                            </div>
                         </div>
-                    </div>
-                    <div className="tableRow">
-                        <div className="tableHead">
-                            Total Tax:
+                        <div className="tableRow">
+                            <div className="tableHead">
+                                Total Tax:
                         </div>
-                        <div className="tableCell">
-                            {tax_total}
+                            <div className="tableCell">
+                                <NumberFormat thousandSeparator={true} displayType={'text'} value={tax_total} decimalScale={2} fixedDecimalScale={true} />
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div className="tableBody">
-                    <div className="tableRow">
-                        <div className="tableHead">Lower Band</div>
-                        <div className="tableHead">Percentage</div>
-                        <div className="tableHead">Taxable Amount</div>
-                        <div className="tableHead">Tax</div>
-                    </div>
-                    {slabs.map((slab) => (
+                <div className="table">
+                    <div className="tableBody">
                         <div className="tableRow">
-                            <div className="tableCell">{slab.lower_band}</div>
-                            <div className="tableCell">{slab.percentage}</div>
-                            <div className="tableCell">{slab.taxable_amount}</div>
-                            <div className="tableCell">{slab.tax_calculated}</div>
+                            <div className="tableHead rightAlign">Lower Band</div>
+                            <div className="tableHead rightAlign">Percentage</div>
+                            <div className="tableHead rightAlign">Taxable Amount</div>
+                            <div className="tableHead rightAlign">Tax</div>
                         </div>
-                    ))}</div>
+                        {slabs.map((slab) => (
+                            <TaxSlab slab={slab} />
+                        ))}</div>
+                </div>
             </div>
         )
     }
