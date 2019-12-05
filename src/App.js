@@ -9,18 +9,23 @@ import Config from './Config'
 class App extends Component {
   baseUrl = new Config().getApiHost();
   state = {
-    schemes: ["2018-2019",
-      "2019-2020"],
+    schemes: {},
     selectedScheme: "",
     salary: null,
     taxInfo: null
   }
 
   componentDidMount() {
+    axios.get(this.baseUrl + '/api/paye/schemes')
+    .then(res => this.setState({ schemes: res.data }, this.setDefaultScheme() ))
+    
    }
 
+   setDefaultScheme(){
+      this.setState({selectedScheme:this.state.schemes[0]});
+   }
   taxFormInputChanged = (scheme, salary) => {
-    axios.get(this.baseUrl + '/api/paye/' + scheme + '/' + salary)
+    axios.get(this.baseUrl + '/api/paye/schemes/' + scheme + '/' + salary)
       .then(res => this.setState({ taxInfo: res.data }))
   }
   render() {
@@ -30,7 +35,7 @@ class App extends Component {
           <h1>Welcome to TaxAutonomy</h1>
         </div>
         <div>
-          <TaxForm schemes={this.state.schemes} inputChanged={this.taxFormInputChanged} />
+          <TaxForm schemes={this.state.schemes} selectedScheme={this.state.selectedScheme} inputChanged={this.taxFormInputChanged} />
           {this.state.taxInfo !== null &&
             <TaxTable taxInfo={this.state.taxInfo} />
           }

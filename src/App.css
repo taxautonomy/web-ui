@@ -30,6 +30,7 @@
 .table {
   display: table;
   padding: 5px;
+  width: 500px;
 }
 
 .tableRow {
@@ -53,6 +54,22 @@
   padding: 5px;
 }
 
+.leftAlign{
+  text-align: left;
+}
+
 .rightAlign{
   text-align: right;
+}
+
+.cellWithBorder{
+  border: 1px solid black;
+}
+
+.cellWithBorderBottom{
+  border-bottom: 1px solid black;
+}
+
+.cellWithBorderTop{
+  border-top: 1px solid black;
 }

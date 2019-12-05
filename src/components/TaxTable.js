@@ -12,18 +12,18 @@ export default class TaxTable extends Component {
                 <div className="table">
                     <div className="tableHeading">
                         <div className="tableRow">
-                            <div className="tableHead">
+                            <div className="tableHead leftAlign cellWithBorderBottom cellWithBorderTop">
                                 Monthly Salary:
                         </div>
-                            <div className="tableCell">
+                            <div className="tableCell rightAlign cellWithBorderBottom cellWithBorderTop">
                                 <NumberFormat thousandSeparator={true} displayType={'text'} value={salary} decimalScale={2} fixedDecimalScale={true} />
                             </div>
                         </div>
                         <div className="tableRow">
-                            <div className="tableHead">
+                            <div className="tableHead leftAlign cellWithBorderBottom">
                                 Total Tax:
                         </div>
-                            <div className="tableCell">
+                            <div className="tableCell rightAlign cellWithBorderBottom">
                                 <NumberFormat thousandSeparator={true} displayType={'text'} value={tax_total} decimalScale={2} fixedDecimalScale={true} />
                             </div>
                         </div>
@@ -32,13 +32,13 @@ export default class TaxTable extends Component {
                 <div className="table">
                     <div className="tableBody">
                         <div className="tableRow">
-                            <div className="tableHead rightAlign">Lower Band</div>
-                            <div className="tableHead rightAlign">Percentage</div>
-                            <div className="tableHead rightAlign">Taxable Amount</div>
-                            <div className="tableHead rightAlign">Tax</div>
+                            <div className="tableHead rightAlign cellWithBorder">Lower Band</div>
+                            <div className="tableHead rightAlign cellWithBorder">Percentage</div>
+                            <div className="tableHead rightAlign cellWithBorder">Taxable Amount</div>
+                            <div className="tableHead rightAlign cellWithBorder">Tax</div>
                         </div>
                         {slabs.map((slab) => (
-                            <TaxSlab slab={slab} />
+                            <TaxSlab slab={slab} key={slab.lower_band} />
                         ))}</div>
                 </div>
             </div>
