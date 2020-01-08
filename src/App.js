@@ -5,14 +5,12 @@ import './App.css';
 import TaxTable from './components/TaxTable';
 import axios from 'axios';
 import Config from './Config'
+import TaxDifference from './TaxDifference';
 
 class App extends Component {
   baseUrl = new Config().getApiHost();
   state = {
-    schemes: {},
-    salary: null,
-    taxInfo1: null,
-    taxInfo2: null
+    schemes: {}
   }
 
   componentDidMount() {
@@ -27,17 +25,17 @@ class App extends Component {
 
   taxFormInputChanged = (schemes, salary) => {
 
-    if(schemes.length > 0){
-    axios.get(this.baseUrl + '/api/paye/schemes/' + schemes[0] + '/' + salary)
-      .then(res => this.setState({ taxInfo1: res.data }));
-    axios.get(this.baseUrl + '/api/paye/schemes/' + schemes[1] + '/' + salary)
-      .then(res => this.setState({ taxInfo2: res.data }));
+    if (schemes.length > 0) {
+      axios.get(this.baseUrl + '/api/paye/schemes/' + schemes[0] + '/' + salary)
+        .then(res => this.setState({ taxInfo1: res.data }));
+      axios.get(this.baseUrl + '/api/paye/schemes/' + schemes[1] + '/' + salary)
+        .then(res => this.setState({ taxInfo2: res.data }));
     }
   };
 
 
   render() {
-    const {schemes, scheme1, scheme2, salary } = this.state;
+    const { schemes, scheme1, scheme2 } = this.state;
     return (
       <div className="App">
         <div className="App-header">
@@ -50,16 +48,17 @@ class App extends Component {
             </div>
           </div>
           <div className="tableRow">
-            <div className="tableCell">{this.state.taxInfo1 !== null &&
+            <div className="tableCell">
               <TaxTable taxInfo={this.state.taxInfo1} />
-            }</div>
-            <div className="tableCell">{this.state.taxInfo2 !== null &&
+            </div>
+          </div><div>
+            <div className="tableCell">
               <TaxTable taxInfo={this.state.taxInfo2} />
-            }</div>
-
+            </div>
           </div>
-
-
+          <div className="tableRow">
+            <TaxDifference taxInfo1={this.state.taxInfo1} taxInfo2={this.state.taxInfo2} />
+          </div>
         </div>
       </div>
     );

@@ -1,22 +1,25 @@
 import React, { Component } from 'react'
 import TaxSlab from './TaxSlab';
 import NumberFormat from 'react-number-format'
+import Collapsible from 'react-collapsible';
 
 export default class TaxTable extends Component {
 
     render() {
-        const { salary, tax_total, slabs } = this.props.taxInfo;
+        if (this.props.taxInfo == null)
+            return null;
+        const { scheme, salary, tax_total, slabs } = this.props.taxInfo;
 
         return (
             <div>
                 <div className="table">
                     <div className="tableHeading">
-                        <div className="tableRow">
+                    <div className="tableRow">
                             <div className="tableHead leftAlign cellWithBorderBottom cellWithBorderTop">
-                                Monthly Salary:
+                                Tax Scheme:
                         </div>
                             <div className="tableCell rightAlign cellWithBorderBottom cellWithBorderTop">
-                                <NumberFormat thousandSeparator={true} displayType={'text'} value={salary} decimalScale={2} fixedDecimalScale={true} />
+                                {scheme}
                             </div>
                         </div>
                         <div className="tableRow">
@@ -29,6 +32,7 @@ export default class TaxTable extends Component {
                         </div>
                     </div>
                 </div>
+                <Collapsible trigger="calculation details ...">
                 <div className="table">
                     <div className="tableBody">
                         <div className="tableRow">
@@ -41,6 +45,7 @@ export default class TaxTable extends Component {
                             <TaxSlab slab={slab} key={slab.lower_band} />
                         ))}</div>
                 </div>
+                </Collapsible>
             </div>
         )
     }
