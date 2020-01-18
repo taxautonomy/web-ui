@@ -3,6 +3,7 @@ import TaxForm from './components/TaxForm'
 
 import './App.css';
 import TaxTable from './components/TaxTable';
+import TaxInfo from './components/TaxInfo';
 import axios from 'axios';
 import Config from './Config'
 import TaxDifference from './TaxDifference';
@@ -48,14 +49,11 @@ class App extends Component {
             </div>
           </div>
           <div className="tableRow">
-            <div className="tableCell">
-              <TaxTable taxInfo={this.state.taxInfo1} />
+                <div className="tableCell leftAlign cellWithBorderBottom"> Tax Scheme </div>
+                <div className="tableCell rightAlign cellWithBorderBottom"> Total Tax </div>
             </div>
-          </div><div>
-            <div className="tableCell">
-              <TaxTable taxInfo={this.state.taxInfo2} />
-            </div>
-          </div>
+          <TaxInfo taxInfo={this.state.taxInfo1} />
+          <TaxInfo taxInfo={this.state.taxInfo2} />
           <div className="tableRow">
             <TaxDifference taxInfo1={this.state.taxInfo1} taxInfo2={this.state.taxInfo2} />
           </div>
