@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import TaxForm from './components/TaxForm'
 
 import './App.css';
-import TaxTable from './components/TaxTable';
 import TaxInfo from './components/TaxInfo';
 import axios from 'axios';
 import Config from './Config'
