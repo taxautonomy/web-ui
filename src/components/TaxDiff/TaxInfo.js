@@ -8,7 +8,7 @@ export default class TaxInfo extends Component {
     render() {
         if (this.props.taxInfo == null)
             return null;
-        const { scheme, salary, tax_total, slabs } = this.props.taxInfo;
+        const { scheme, tax_total, slabs } = this.props.taxInfo;
 
         return (
 

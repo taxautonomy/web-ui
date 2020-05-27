@@ -73,3 +73,24 @@
 .cellWithBorderTop{
   border-top: 1px solid black;
 }
+
+.listItem {
+  display: list-item;
+  margin-left: 1.3em;
+  list-style-type: circle;   
+}
+
+.modalInputForm{
+  float: left;
+  width: 100%;
+}
+.modalInputRow{
+  padding: 10px;
+}
+
+.modalButtonRow{
+  padding: 10px;
+}
+.modalButtonRow span{
+  margin: 0px 5px;
+}
