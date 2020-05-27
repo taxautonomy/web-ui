@@ -71,7 +71,7 @@ export default class IncomeList extends Component {
       <div>
         <div>
           <DataTable
-            title="Regular Income"
+            title="My Income"
             columns={columns}
             data={this.state.incomeList}
           />
@@ -85,7 +85,6 @@ export default class IncomeList extends Component {
         >
           <div className="modalInputForm">
             <div className="modalInputRow">
-              {/* Date: <input type="text" name="date" onChange={this.handleInputChange} /> */}
               Date: <DatePicker selected={this.state.newIncome_date} onChange={date => this.setState({ newIncome_date: date })} />
             </div>
             <div className="modalInputRow">
