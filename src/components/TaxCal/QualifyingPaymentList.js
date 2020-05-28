@@ -24,15 +24,14 @@ const columns = [
 ];
 
 
-export default class IncomeList extends Component {
+export default class QualifyingPaymentList extends Component {
 
-  title = "My Income"
   constructor(props) {
     super(props);
     this.state = {
       showModal: false,
-      list: [],
-      new_date: new Date()
+      incomeList: [],
+      newIncome_date: new Date()
     };
 
   }
@@ -42,14 +41,14 @@ export default class IncomeList extends Component {
   }
 
   addIncome = () => {
-    let total = 0;
-    const { new_date, new_desc, new_amt } = this.state;
-    const newIncome = { date: new_date.toISOString().slice(0, 10), desc: new_desc, amt: parseFloat(new_amt) };
-    const list = this.state.list.concat(newIncome);
+    this.setState({ showModal: false });
+    const { newIncome_date, newIncome_desc, newIncome_amt } = this.state;
+    const newIncome = { date: newIncome_date.toISOString().slice(0, 10), desc: newIncome_desc, amt: parseFloat(newIncome_amt) };
 
-    list.forEach(i => (total += i.amt));
 
-    this.setState({ showModal: false, list: list, total: total }, () => {
+    this.setState({ incomeList: this.state.incomeList.concat(newIncome) }, () => {
+      let total = 0;
+      this.state.incomeList.forEach(i => (total += i.amt));
       console.log("New Income Added: ", newIncome.amt)
       console.log("New Total Income: ", total)
       this.props.totalChanged(total);
@@ -72,37 +71,34 @@ export default class IncomeList extends Component {
       <div>
         <div>
           <DataTable
-            title={this.title}
+            title="My Qualifying Payments"
             columns={columns}
-            data={this.state.list}
+            data={this.state.incomeList}
           />
         </div>
-        <div style={{overflow:'overlay'}}>
-          <div className="tableCell floatLeft"><span>Total for {this.title}: <b>{this.state.total}</b></span></div><div className="tableCell floatRight" ><button onClick={this.openAddIncomeModal}>Add Income</button></div>
-          </div>
-          
+        <div style={{ float: "left" }}>
+          <button onClick={this.openAddIncomeModal}>Add Qualifying Payment</button></div>
         <Modal
           isOpen={this.state.showModal}
           contentLabel="Add Income Modal"
-          appElement={document.getElementById('root')} style={{ content: { width: '400px', height: '225px', left: '20%' } }}
+          appElement={document.getElementById('root') } style={{  content: { width: '400px', height: '200px', left:'20%' } }}
         >
           <div className="modalInputForm">
-            <div className="modalTitle">New Income</div>
-            <hr/>
             <div className="modalInputRow">
-              Date: <DatePicker selected={this.state.new_date} onChange={date => this.setState({ new_date: date })} />
+              Date: <DatePicker selected={this.state.newIncome_date} onChange={date => this.setState({ newIncome_date: date })} />
             </div>
             <div className="modalInputRow">
-              Description: <input type="text" name="new_desc" onChange={this.handleInputChange} />
+              Description: <input type="text" name="newIncome_desc" onChange={this.handleInputChange} />
             </div>
             <div className="modalInputRow">
-              Amount: <input type="text" name="new_amt" onChange={this.handleInputChange} />
+              Amount: <input type="text" name="newIncome_amt" onChange={this.handleInputChange} />
             </div>
             <div className="modalButtonRow">
-              <button onClick={this.addIncome}>Submit</button><span />
+              <button onClick={this.addIncome}>Submit</button><span/>
               <button onClick={() => this.setState({ showModal: false })}>Cancel</button>
             </div>
           </div>
+
         </Modal>
       </div>
     )

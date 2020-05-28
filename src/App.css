@@ -94,3 +94,15 @@
 .modalButtonRow span{
   margin: 0px 5px;
 }
+
+.modalTitle{
+  font-size: 18pt;
+}
+
+.floatLeft{
+  float: left;
+}
+
+.floatRight{
+  float: right;
+}
