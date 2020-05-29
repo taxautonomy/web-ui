@@ -1,27 +1,18 @@
 import React, { Component } from 'react'
-import DataTable from 'react-data-table-component';
 import Modal from 'react-modal';
-import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
 
-const columns = [
-  {
-    name: 'Date',
-    selector: 'date',
-    sortable: true
-  },
-  {
-    name: 'Description',
-    selector: 'desc',
-    sortable: true,
-  },
-  {
-    name: 'Amount',
-    selector: 'amt',
-    sortable: true,
-    right: true,
-  },
-];
+// Material UI
+import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import { TableFooter } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField'
 
 
 export default class IncomeList extends Component {
@@ -71,16 +62,39 @@ export default class IncomeList extends Component {
     return (
       <div>
         <div>
-          <DataTable
-            title={this.title}
-            columns={columns}
-            data={this.state.list}
-          />
+          <TableContainer component={Paper}>
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Date</TableCell>
+                  <TableCell>Description</TableCell>
+                  <TableCell align="right">Amount (LKR)</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {this.state.list.map((row) => (
+                  <TableRow key={row.name}>
+                    <TableCell component="th" scope="row">{row.date}</TableCell>
+                    <TableCell >{row.desc}</TableCell>
+                    <TableCell align="right">{row.amt}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan="2">Total</TableCell>
+                  <TableCell align="right">{this.state.total}</TableCell>
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </TableContainer>
         </div>
-        <div style={{overflow:'overlay'}}>
-          <div className="tableCell floatLeft"><span>Total for {this.title}: <b>{this.state.total}</b></span></div><div className="tableCell floatRight" ><button onClick={this.openAddIncomeModal}>Add Income</button></div>
+        <div style={{ overflow: 'overlay' }}>
+          <div className="tableCell floatLeft"><span>Total for {this.title}: <b>{this.state.total}</b></span></div><div className="tableCell floatRight" >
+            <Button variant="contained" color="primary" onClick={this.openAddIncomeModal}>Add Income</Button>
           </div>
-          
+        </div>
+
         <Modal
           isOpen={this.state.showModal}
           contentLabel="Add Income Modal"
@@ -88,9 +102,21 @@ export default class IncomeList extends Component {
         >
           <div className="modalInputForm">
             <div className="modalTitle">New Income</div>
-            <hr/>
+            <hr />
             <div className="modalInputRow">
-              Date: <DatePicker selected={this.state.new_date} onChange={date => this.setState({ new_date: date })} />
+              {/* Date: <DatePicker selected={this.state.new_date} onChange={date => this.setState({ new_date: date })} /> */}
+
+              <TextField
+                id="date"
+                label="Date"
+                type="date"
+                defaultValue="2017-05-24"
+                value={this.state.new_date.toISOString().slice(0, 10)}
+                onChange={(e)=>console.log(e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
             </div>
             <div className="modalInputRow">
               Description: <input type="text" name="new_desc" onChange={this.handleInputChange} />
