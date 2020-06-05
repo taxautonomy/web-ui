@@ -27,7 +27,7 @@ export default function EntityList(props) {
   list.forEach(i => (total += i.amt));
   const [showModal, setShowModal] = useState(false);
   const [newEntry, setNewEntry] = useState({
-    date: new Date().toISOString().slice(0,10),
+    date: new Date().toISOString().slice(0, 10),
     desc: '',
     amt: 0
   });
@@ -79,7 +79,7 @@ export default function EntityList(props) {
             <TableBody>
               {list.map((row) => (
                 <TableRow key={row.id}>
-                  <TableCell component="th" scope="row">{row.date.toISOString().slice(0,10)}</TableCell>
+                  <TableCell component="th" scope="row">{row.date.toISOString().slice(0, 10)}</TableCell>
                   <TableCell >{row.desc}</TableCell>
                   <TableCell align="right">{row.amt}</TableCell>
                 </TableRow>
@@ -94,13 +94,13 @@ export default function EntityList(props) {
           </Table>
         </TableContainer>
       </div>
-      <div style={{paddingTop:'10px'}}>
-      <Fab variant="extended" color="primary" aria-label="add" position="fixed" style={{ float: 'right' }} onClick={openAddIncomeModal}>
-        <AddIcon /> Add {props.entityName}
-      </Fab>
+      <div style={{ paddingTop: '10px' }}>
+        <Fab variant="extended" color="primary" aria-label="add" position="fixed" style={{ margin: 0, top: 'auto', right: 20, bottom: 20, left: 'auto', position: 'fixed' }} onClick={openAddIncomeModal}>
+          <AddIcon />&nbsp;&nbsp;Add {props.entityName}
+        </Fab>
       </div>
       <Dialog open={showModal} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">New {props.entityName}</DialogTitle>
+        <DialogTitle id="form-dialog-title">New {props.entityName}</DialogTitle>
         <DialogContent>
           {/* <DialogContentText>
             To subscribe to this website, please enter your email address here. We will send updates
@@ -121,7 +121,7 @@ export default function EntityList(props) {
 
           </div>
           <div className="modalInputRow">
-          <TextField
+            <TextField
               id="desc"
               label="Description"
               type="text"
@@ -134,7 +134,7 @@ export default function EntityList(props) {
             />
           </div>
           <div className="modalInputRow">
-          <TextField
+            <TextField
               id="amt"
               label="Amount"
               type="text"
