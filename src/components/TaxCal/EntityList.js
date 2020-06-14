@@ -17,7 +17,7 @@ export default function EntityList(props) {
   const list = props.list;
   let total = 0;
   list.forEach(i => (total += i.amt));
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(props.showNewEntityDialog?props.showNewEntityDialog:false);
 
   const openAddIncomeModal = () => {
     setShowModal(true);
