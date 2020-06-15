@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import Config from './Config'
-import { AppBar, Typography } from '@material-ui/core';
+import { AppBar, Typography, Toolbar } from '@material-ui/core';
 import Summary from './components/TaxCal/Summary';
 
 class App extends Component {
@@ -25,7 +25,11 @@ class App extends Component {
         <React.Fragment>
         <CssBaseline />
           <AppBar position="static">
-            <Typography variant="h3">TaxAutonomy</Typography>
+          <Toolbar>
+          <Typography variant="h3" >
+            TaxAutonomy
+          </Typography>
+        </Toolbar>
           </AppBar>
           <Container maxWidth="lg">
           <Router>

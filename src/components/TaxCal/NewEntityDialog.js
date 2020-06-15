@@ -78,7 +78,7 @@ export default function NewEntityDialog(props) {
               label="Amount"
               type="text"
               name="amt"
-              value={newEntity.amt}
+              value={newEntity.amt>0? newEntity.amt:''}
               onChange={handleInputChange}
               InputLabelProps={{
                 shrink: true,

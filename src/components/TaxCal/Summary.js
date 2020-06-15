@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import EntityList from './EntityList';
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import CloseIcon from '@material-ui/icons/Close'
@@ -19,6 +19,7 @@ import {
   AppBar,
   Toolbar,
   Transition,
+  useMediaQuery
 } from '@material-ui/core';
 
 import {
@@ -53,13 +54,16 @@ const useStyles = makeStyles((theme) => ({
   cardHeader: {
     backgroundColor: theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[700],
   },
-  entitlyListDialogAppBar: {
+  entityListDialogAppBar: {
     position: 'relative',
   },
-  entitlyListDialogTitle: {
+  entityListDialogTitle: {
     marginLeft: theme.spacing(2),
     flex: 1,
   },
+  entityListDialogPaper: {
+    minHeight: '90vh', 
+    maxHeight: '90vh',}
 }));
 
 function guid() {
@@ -104,17 +108,19 @@ function SummaryCard(props) {
 
 function EntityListDialog(props) {
   const classes = useStyles();
-
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
+  console.log(`showNewEntityDialog: ${props.showNewEntityDialog}`);
   return (
-    <Dialog fullScreen open={props.open} onClose={props.onClose} TransitionComponent={Transition}>
-      <AppBar className={classes.entityListDialogAppBar}>
+    <Dialog fullWidth={true} classes={fullScreen?{}:{paper:classes.entityListDialogPaper}}  maxWidth="lg" fullScreen={fullScreen} open={props.open} onClose={props.onClose} TransitionComponent={Transition} >
+      <AppBar position="static" >
         <Toolbar>
-          <IconButton edge="start" color="inherit" onClick={props.onClose} aria-label="close">
+          <Typography variant="h3"  style={{flexGrow:1}}>
+            {props.title}
+          </Typography>
+          <IconButton color="inherit" onClick={props.onClose} aria-label="close">
             <CloseIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.entityListDialogTitle}>
-            {props.entityName}
-          </Typography>
         </Toolbar>
       </AppBar>
       <EntityList list={props.list} entityName={props.entityName} onAdd={props.onAdd} showNewEntityDialog={props.showNewEntityDialog} />
@@ -123,21 +129,15 @@ function EntityListDialog(props) {
 }
 export default function Summary() {
   const classes = useStyles();
-  const [value, setValue] = useState(0);
   const [incomeList, setIncomeList] = useState([]);
   const [qualifyingPaymentList, setQualifyingPaymentList] = useState([]);
   const [taxPaymentList, setTaxPaymentList] = useState([]);
   const [openEntityListDialog, setOpenEntityListDialog] = useState(null);
   const [openNewEntityDialog, setOpenNewEntityDialog] = useState(false);
   const totals = { income: 0, qualifyingPayment: 0, taxPayment: 0 }
-  let incomeTotal = 0;
   incomeList.forEach(i => totals.income += i.amt);
   qualifyingPaymentList.forEach(i => totals.qualifyingPayment += i.amt);
   taxPaymentList.forEach(i => totals.taxPayment += i.amt);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
 
   const incomeAdded = income => {
     income.id = guid();
@@ -145,6 +145,7 @@ export default function Summary() {
     const newList = incomeList.concat(income);
 
     setIncomeList(newList);
+    setOpenNewEntityDialog(false);
   }
 
   const qualifyingPaymentAdded = payment => {
@@ -185,7 +186,7 @@ export default function Summary() {
         <SummaryCard title={title} entityName={entityType} total={totals[entityKey]}
           onClickMoreInfo={() => showEntityListDialog(entityKey, false)}
           onClickAdd={() => showEntityListDialog(entityKey, true)} />
-        <EntityListDialog list={list} entityName={entityType}
+        <EntityListDialog title={title} list={list} entityName={entityType}
           open={openEntityListDialog === entityKey}
           showNewEntityDialog={openNewEntityDialog}
           onClose={() => hideEntityListDialog()}

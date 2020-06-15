@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 
 // Material UI
 import Table from '@material-ui/core/Table';
@@ -18,7 +18,6 @@ export default function EntityList(props) {
   let total = 0;
   list.forEach(i => (total += i.amt));
   const [showModal, setShowModal] = useState(props.showNewEntityDialog?props.showNewEntityDialog:false);
-
   const openAddIncomeModal = () => {
     setShowModal(true);
   }
@@ -28,6 +27,12 @@ export default function EntityList(props) {
     props.onAdd(entity);
 
   }
+
+  useEffect(() => {
+    
+    console.log(`EntityList:showNewEntityDialog :${props.showNewEntityDialog}`)
+
+  }, [])
 
   return (
     <div>
@@ -69,7 +74,7 @@ export default function EntityList(props) {
           <AddIcon />&nbsp;&nbsp;Add {props.entityName}
         </Fab>
       </div>
-      <NewEntityDialog open={showModal} onSubmit={addEntity} onCancel={()=>setShowModal(false)} entityName={props.entityName}/>
+      <NewEntityDialog open={showModal} onSubmit={addEntity} onCancel={()=>{setShowModal(false)}} entityName={props.entityName}/>
     </div>
   )
 }
