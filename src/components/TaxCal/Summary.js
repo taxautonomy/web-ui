@@ -5,11 +5,9 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import CloseIcon from '@material-ui/icons/Close'
 import {
   Typography,
-  Container,
   Card,
   Grid,
   CardContent,
-  Paper,
   CardActions,
   IconButton,
   Button,
@@ -19,20 +17,11 @@ import {
   AppBar,
   Toolbar,
   Transition,
-  useMediaQuery
+  useMediaQuery,
+  TableCell, Table, TableRow, TableBody
 } from '@material-ui/core';
 
-import {
-  red
-} from '@material-ui/core/colors'
-import NewEntityDialog from './NewEntityDialog';
 
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   card: {
-    minWidth: 275,
+    minWidth: 265,
   },
   cardTitle: {
     fontSize: 14,
@@ -49,10 +38,11 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 12,
   },
   cardAvatar: {
-    backgroundColor: theme.palette.secondary.light
+    backgroundColor: theme.palette.secondary.dark
   },
   cardHeader: {
-    backgroundColor: theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[700],
+    backgroundColor: theme.palette.primary.light,
+    fontSize: '18px'
   },
   entityListDialogAppBar: {
     position: 'relative',
@@ -62,8 +52,12 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   entityListDialogPaper: {
-    minHeight: '90vh', 
-    maxHeight: '90vh',}
+    minHeight: '90vh',
+    maxHeight: '90vh',
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
 }));
 
 function guid() {
@@ -74,14 +68,23 @@ function guid() {
 }
 
 function SummaryCard(props) {
+  const { entityType } = props;
   const classes = useStyles();
 
+  const getLatestRecord = list => {
+    if (list.length == 0)
+      return null
+    return list.reduce(function (a, b) { return a.date > b.date ? a : b; }, { date: new Date(0, 0, 0) });
+  }
+
+  const latestRecord = getLatestRecord(entityType.list);
+  const latestRecordString = latestRecord ? `${latestRecord.date.toDateString()} - ${latestRecord.desc} - ${latestRecord.amt.toFixed(2)}` : 'no records found';
   return (
     <Card className={classes.card} >
       <CardHeader className={classes.cardHeader}
         avatar={
           <Avatar aria-label="recipe" className={classes.cardAvatar}>
-            {props.title.substring(0, 2)}
+            {entityType.title.substring(0, 2)}
           </Avatar>
         }
         action={
@@ -89,19 +92,32 @@ function SummaryCard(props) {
             <MoreVertIcon />
           </IconButton>
         }
-        title={props.title}
-        subheader="September 14, 2016"
+        title={
+          <Typography variant="h6">{entityType.title}</Typography>}
       />
-      <CardContent>
-        <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
-          {props.title}
-        </Typography>
-        <Typography variant="body2" component="p">{props.total.toFixed(2)}</Typography>
+      <CardContent style={{ padding: '0' }}>
+        <Table>
+          <TableBody>
+            <TableRow>
+              <TableCell>
+                <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
+                  Total (LKR)
+                </Typography>
+                <Typography variant="body2" component="p" style={{ fontWeight: 'bold' }}>{entityType.total.toFixed(2)}</Typography>
+              </TableCell>
+              <TableCell>
+                <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
+                  Latest Record
+                </Typography>
+                <Typography variant="body2" component="p">{latestRecordString}</Typography>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </CardContent>
-      <CardActions>
-        <Button size="small" onClick={props.onClickMoreInfo}>more info</Button>
-        {/* <IconButton size="small"><AddIcon/></IconButton> */}
-        <Button size="small" onClick={props.onClickAdd}>add {props.entityName}</Button>
+      <CardActions style={{ justifyContent: 'space-between' }}>
+        <Button size="small" color="primary" onClick={props.onClickMoreInfo}>more info</Button>
+        <Button size="small" color="primary" onClick={props.onClickAdd}>add {entityType.name}</Button>
       </CardActions>
     </Card>);
 }
@@ -110,101 +126,102 @@ function EntityListDialog(props) {
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
-  console.log(`showNewEntityDialog: ${props.showNewEntityDialog}`);
+
   return (
-    <Dialog fullWidth={true} classes={fullScreen?{}:{paper:classes.entityListDialogPaper}}  maxWidth="lg" fullScreen={fullScreen} open={props.open} onClose={props.onClose} TransitionComponent={Transition} >
+    <Dialog fullWidth={true}
+      classes={fullScreen ? {} : { paper: classes.entityListDialogPaper }}
+      maxWidth="lg" 
+      fullScreen={fullScreen}
+      open={props.open}
+      onClose={props.onClose}
+      TransitionComponent={Transition} >
       <AppBar position="static" >
         <Toolbar>
-          <Typography variant="h3"  style={{flexGrow:1}}>
-            {props.title}
+          <Typography variant="h5" style={{ flexGrow: 1 }}>
+            {props.entityType.title} {fullScreen ? ' - TaxAutonomy' : ''}
           </Typography>
           <IconButton color="inherit" onClick={props.onClose} aria-label="close">
             <CloseIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
-      <EntityList list={props.list} entityName={props.entityName} onAdd={props.onAdd} showNewEntityDialog={props.showNewEntityDialog} />
+      <EntityList entityType={props.entityType} onAdd={props.onAdd} showNewEntityDialog={props.showNewEntityDialog} />
     </Dialog>
   )
 }
-export default function Summary() {
-  const classes = useStyles();
-  const [incomeList, setIncomeList] = useState([]);
-  const [qualifyingPaymentList, setQualifyingPaymentList] = useState([]);
-  const [taxPaymentList, setTaxPaymentList] = useState([]);
-  const [openEntityListDialog, setOpenEntityListDialog] = useState(null);
+
+function EntityTypeGridItem(props) {
+  const { entityType, onAdd, ...other } = props
+  const [openEntityListDialog, setOpenEntityListDialog] = useState(false);
   const [openNewEntityDialog, setOpenNewEntityDialog] = useState(false);
-  const totals = { income: 0, qualifyingPayment: 0, taxPayment: 0 }
-  incomeList.forEach(i => totals.income += i.amt);
-  qualifyingPaymentList.forEach(i => totals.qualifyingPayment += i.amt);
-  taxPaymentList.forEach(i => totals.taxPayment += i.amt);
 
-  const incomeAdded = income => {
-    income.id = guid();
-    console.log("new income:", income)
-    const newList = incomeList.concat(income);
-
-    setIncomeList(newList);
+  const handleAdd = (entityTypeKey, entity) => {
+    onAdd(entityTypeKey, entity);
     setOpenNewEntityDialog(false);
   }
 
-  const qualifyingPaymentAdded = payment => {
-    payment.id = guid();
-    console.log("new qualifying payment:", payment)
-    const newList = qualifyingPaymentList.concat(payment);
-
-    setQualifyingPaymentList(newList);
-  }
-
-  const taxPaymentAdded = payment => {
-    payment.id = guid();
-    console.log("new tax payment:", payment)
-    const newList = taxPaymentList.concat(payment);
-
-    setTaxPaymentList(newList);
-  }
-
-  const showEntityListDialog = (entityType, showNewEntityDialog) => {
-    setOpenEntityListDialog(entityType);
+  const showEntityListDialog = (showNewEntityDialog) => {
+    setOpenEntityListDialog(true);
     setOpenNewEntityDialog(showNewEntityDialog);
   }
 
   const hideEntityListDialog = () => {
-    setOpenEntityListDialog(null);
+    setOpenEntityListDialog(false);
     setOpenNewEntityDialog(false);
   }
-  const bull = <span className={classes.bullet}>•</span>;
 
-  const getEntityKey = (str) => (
-    str.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase()))
+  return (
+    <Grid item {...other}>
+      <SummaryCard entityType={entityType}
+        onClickMoreInfo={() => showEntityListDialog(false)}
+        onClickAdd={() => showEntityListDialog(true)} />
+      <EntityListDialog entityType={entityType}
+        open={openEntityListDialog}
+        showNewEntityDialog={openNewEntityDialog}
+        onClose={() => hideEntityListDialog()}
+        onAdd={handleAdd} />
+    </Grid>
+  )
+}
 
-  const GridItemContent = (props) => {
-    const { entityType, title, onAdd, list } = props
-    const entityKey = getEntityKey(entityType);
-    return (
-      <React.Fragment>
-        <SummaryCard title={title} entityName={entityType} total={totals[entityKey]}
-          onClickMoreInfo={() => showEntityListDialog(entityKey, false)}
-          onClickAdd={() => showEntityListDialog(entityKey, true)} />
-        <EntityListDialog title={title} list={list} entityName={entityType}
-          open={openEntityListDialog === entityKey}
-          showNewEntityDialog={openNewEntityDialog}
-          onClose={() => hideEntityListDialog()}
-          onAdd={onAdd} />
-      </React.Fragment>
-    )
+const entityTypeArray = [
+  { key: 'income', name: 'Income', title: 'Income', list: [], total: 0 },
+  { key: 'qualifyingPayment', name: 'Qualifying Payment', title: 'Qualifying Payments', list: [], total: 0 },
+  { key: 'taxPayment', name: 'Tax Payment', title: 'Tax Payments', list: [], total: 0 }]
+
+const entityTypes = {};
+entityTypeArray.forEach(i => entityTypes[i.key] = i);
+
+export default function Summary() {
+  const [entities, setEntities] = useState(entityTypes);
+
+  const entityAdded = (entityTypeKey, newEntity) => {
+    newEntity.id = guid();
+    const newList = entities[entityTypeKey].list.concat(newEntity);
+    updateList(entityTypeKey, newList);
+    console.log(`new ${entityTypeKey} added :`, newEntity)
   }
+
+  const updateList = (entityTypeKey, newList) => {
+
+    let newTotal = 0;
+    newList.forEach(i => newTotal += i.amt);
+
+    setEntities({
+      ...entities,
+      [entityTypeKey]: {
+        ...entities[entityTypeKey],
+        list: newList,
+        total: newTotal
+      }
+    })
+  }
+
   return (
     <Grid container style={{ marginTop: 10 }} spacing={3}>
-      <Grid item xs={12} sm={12} md={4}>
-        <GridItemContent entityType="Income" title="Income" onAdd={incomeAdded} list={incomeList} />
-      </Grid>
-      <Grid item xs={12} sm={6} md={4}>
-        <GridItemContent entityType="Qualifying Payment" title="Qualifying Payments" onAdd={qualifyingPaymentAdded} list={qualifyingPaymentList} />
-      </Grid>
-      <Grid item xs={12} sm={6} md={4}>
-        <GridItemContent entityType="Tax Payment" title="Tax Payments" onAdd={taxPaymentAdded} list={taxPaymentList} />
-      </Grid>
+      <EntityTypeGridItem entityType={entities['income']} onAdd={entityAdded} xs={12} sm={12} md={4} />
+      <EntityTypeGridItem entityType={entities['qualifyingPayment']} onAdd={entityAdded} xs={12} sm={6} md={4} />
+      <EntityTypeGridItem entityType={entities['taxPayment']} onAdd={entityAdded} xs={12} sm={6} md={4} />
     </Grid>
   );
 }

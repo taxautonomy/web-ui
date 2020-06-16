@@ -1,46 +1,54 @@
-import React, { Component } from 'react';
+import React from 'react';
 import TaxDiff from './components/TaxDiff/Main'
 import TaxCal from './components/TaxCal/Main'
-import Home from './components/Home'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import Config from './Config'
-import { AppBar, Typography, Toolbar } from '@material-ui/core';
+import { AppBar, Typography, Toolbar, IconButton } from '@material-ui/core';
 import Summary from './components/TaxCal/Summary';
+import MenuIcon from '@material-ui/icons/Menu'
+import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import { blueGrey } from '@material-ui/core/colors'
+const useStyles = makeStyles((theme) => ({
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+}));
 
-class App extends Component {
-  baseUrl = new Config().getApiHost();
-  state = {
-    schemes: {}
+const theme = createMuiTheme({
+  palette:{
+    primary:blueGrey
   }
+});
 
-  componentDidMount() {
+export default function App() {
+  const baseUrl = new Config().getApiHost();
+  const classes = useStyles();
 
-  }
 
-
-  render() {
-    return (
-        <React.Fragment>
-        <CssBaseline />
-          <AppBar position="static">
-          <Toolbar>
-          <Typography variant="h3" >
+  return (
+    <React.Fragment>
+      <CssBaseline />
+      <ThemeProvider theme={theme}>
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h5" >
             TaxAutonomy
           </Typography>
         </Toolbar>
-          </AppBar>
-          <Container maxWidth="lg">
-          <Router>
-            <Route exact path="/" component={Summary} />
-            <Route exact path="/diff" component={TaxDiff} />
-            <Route path="/cal" component={TaxCal} />
-          </Router>
-        </Container>
-        </React.Fragment>
-    );
-  }
+      </AppBar>
+      <Container maxWidth="lg">
+        <Router>
+          <Route exact path="/" component={Summary} />
+          <Route exact path="/diff" component={TaxDiff} />
+          <Route path="/cal" component={TaxCal} />
+        </Router>
+      </Container>
+      </ThemeProvider>
+    </React.Fragment>
+  );
 }
-
-export default App;
