@@ -54,17 +54,26 @@ export default function NewEntityDialog(props) {
 
   }
 
-  const DialogTitleBar = () => (fullScreen ? (<AppBar position="static" >
-    <Toolbar>
-      <Typography variant="h5" style={{ flexGrow: 1 }}>
-        New {props.entityType.name} - TaxAutonomy
-    </Typography>
-    </Toolbar>
-  </AppBar>) : <DialogTitle id="form-dialog-title">New {props.entityType.name}</DialogTitle>);
+  const DialogTitleBar = () => {
+
+    const titleFullScreen = (
+      <AppBar position="static" >
+        <Toolbar>
+          <Typography variant="h5" style={{ flexGrow: 1 }}>
+            New {props.entityType.name} - TaxAutonomy
+          </Typography>
+        </Toolbar>
+      </AppBar>
+    );
+
+    const titleNormal = (<DialogTitle id="form-dialog-title">New {props.entityType.name}</DialogTitle>);
+
+    return (fullScreen ? titleFullScreen : titleNormal)
+  };
 
   return (
     <Dialog open={props.open} fullScreen={fullScreen} aria-labelledby="form-dialog-title">
-      <DialogTitleBar/>
+      <DialogTitleBar />
       <DialogContent>
         <div className="modalInputRow">
           <TextField
@@ -100,8 +109,8 @@ export default function NewEntityDialog(props) {
           />          </div>
       </DialogContent>
       <DialogActions>
-        <Button id="save" onClick={()=>handleSubmit(false)} variant="outlined" color="primary">Save</Button>
-        <Button onClick={()=>handleSubmit(true)} variant="outlined" color="primary">Save & Add New</Button>
+        <Button id="save" onClick={() => handleSubmit(false)} variant="outlined" color="primary">Save</Button>
+        <Button onClick={() => handleSubmit(true)} variant="outlined" color="primary">Save & Add New</Button>
         <Button onClick={() => props.onCancel()} variant="outlined" color="primary">Cancel</Button>
       </DialogActions>
     </Dialog>

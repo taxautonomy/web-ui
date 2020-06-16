@@ -12,7 +12,6 @@ import { TableFooter } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { Typography, Fab } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-
 import NewEntityDialog from './NewEntityDialog'
 
 const useStyles = makeStyles((theme) => ({
