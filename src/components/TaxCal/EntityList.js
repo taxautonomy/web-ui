@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 
 // Material UI
 import Table from '@material-ui/core/Table';
@@ -8,15 +8,18 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { TableFooter } from '@material-ui/core';
+import { TableFooter, IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import { Typography, Fab } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import NewEntityDialog from './NewEntityDialog'
+import EntityDeleteDialog from './EntityDeleteDialog';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.background.paper,
+    //backgroundColor: theme.palette.background.paper,
     position: 'relative',
   },
   fab: {
@@ -31,17 +34,58 @@ export default function EntityList(props) {
   const classes = useStyles();
   const theme = useTheme();
 
-  const {entityType} = props;
+  const { entityType } = props;
 
-  const [showModal, setShowModal] = useState(props.showNewEntityDialog ? props.showNewEntityDialog : false);
-  const openAddIncomeModal = () => {
-    setShowModal(true);
+  const emptyEntity = {
+    date: new Date().toISOString().slice(0, 10),
+    desc: '',
+    amt: 0
+  };
+
+  const [showEntityEditDialog, setShowEntityEditDialog] = useState(props.showNewEntityDialog ? props.showNewEntityDialog : false);
+  const [showEntityDeleteDialog, setShowEntityDeleteDialog] = useState(false);
+  const [dialogBoxEntity, setDialogBoxEntity] = useState(emptyEntity);
+
+  const openAddEntityDialog = () => {
+    setDialogBoxEntity(emptyEntity);
+    setShowEntityEditDialog(true);
   }
 
-  const addEntity = (entityTypeKey, entity, keepOpen) => {
-    setShowModal(keepOpen);
-    props.onAdd(entityTypeKey, entity);
+  const handleAddOrUpdate = (entityTypeKey, entity, keepOpen) => {
+    setShowEntityEditDialog(keepOpen);
 
+    if (entity.id)
+      props.onUpdate(entityTypeKey, entity);
+    else
+      props.onAdd(entityTypeKey, entity);
+
+  }
+
+  const handleDelete = (entityTypeKey, entity) => {
+    setShowEntityDeleteDialog(false);
+    props.onDelete(entityTypeKey, entity);
+
+  }
+
+
+  const openEditEntityDialog = (entity) => {
+    console.log("openEditEntityDialog.entity: ", entity)
+    //entity.date = entity.date.toISOString().slice(0,10);
+    setDialogBoxEntity({
+      ...entity,
+      date: entity.date.toISOString().slice(0, 10)
+    });
+    setShowEntityEditDialog(true);
+  }
+
+  const openDeleteEntityDialog = (entity) => {
+    console.log("openDeleteEntityDialog.entity: ", entity)
+    //entity.date = entity.date.toISOString().slice(0,10);
+    setDialogBoxEntity({
+      ...entity,
+      date: entity.date.toISOString().slice(0, 10)
+    });
+    setShowEntityDeleteDialog(true);
   }
 
   return (
@@ -53,14 +97,20 @@ export default function EntityList(props) {
               <TableCell>Date</TableCell>
               <TableCell>Description</TableCell>
               <TableCell align="right">Amount (LKR)</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {entityType.list.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell component="th" scope="row">{row.date.toISOString().slice(0, 10)}</TableCell>
-                <TableCell >{row.desc}</TableCell>
-                <TableCell align="right">{row.amt.toFixed(2)}</TableCell>
+            {entityType.list.map((entity) => (
+              <TableRow key={entity.id}>
+                <TableCell component="th" scope="row">{entity.date.toISOString().slice(0, 10)}</TableCell>
+                <TableCell >{entity.desc}</TableCell>
+                <TableCell align="right">{entity.amt.toFixed(2)}</TableCell>
+                <TableCell>
+                  <IconButton size="small" onClick={() => openEditEntityDialog(entity)}><EditIcon /></IconButton>
+                  <IconButton size="small" onClick={() => openDeleteEntityDialog(entity)}><DeleteIcon /></IconButton>
+                </TableCell>
+
               </TableRow>
             ))}
           </TableBody>
@@ -77,11 +127,12 @@ export default function EntityList(props) {
         color="primary"
         aria-label="add"
         className={classes.fab}
-        onClick={()=> openAddIncomeModal()}
+        onClick={() => openAddEntityDialog()}
       >
         <AddIcon />&nbsp;&nbsp;Add {entityType.name}
       </Fab>
-      <NewEntityDialog open={showModal} onSubmit={addEntity} onCancel={() => { setShowModal(false) }} entityType={entityType} />
+      <NewEntityDialog open={showEntityEditDialog} onSubmit={handleAddOrUpdate} onCancel={() => { setShowEntityEditDialog(false) }} entityType={entityType} entity={dialogBoxEntity} />
+      <EntityDeleteDialog open={showEntityDeleteDialog} onSubmit={handleDelete} onCancel={()=> setShowEntityDeleteDialog(false)} entityType={entityType} entity={dialogBoxEntity}/>
     </React.Fragment>
   )
 }

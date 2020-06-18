@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useReducer } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {Grid} from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import EntityTypeGridItem from './EntityTypeGridItem';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
+    //backgroundColor: theme.palette.background.paper,
   },
   entityListDialogAppBar: {
     position: 'relative',
@@ -40,14 +40,69 @@ const entityTypeArray = [
 const entityTypes = {};
 entityTypeArray.forEach(i => entityTypes[i.key] = i);
 
+const reducer = (state, action) => {
+
+  const { type, entityTypeKey, entity } = action;
+
+  let newList = [];
+  let newTotal = 0;
+  let matchIndex = 0;
+  console.log('reducer.action:', action);
+
+  switch (type) {
+    case 'add':
+      entity.id = guid();
+      newList = state[entityTypeKey].list.concat(entity);
+      break;
+
+    case 'update':
+      newList = [...state[entityTypeKey].list]
+      matchIndex = newList.findIndex(e => e.id === entity.id);
+      newList[matchIndex] = entity;
+      console.log("updated list: ", newList);
+      break;
+
+    case 'delete':
+      newList = [...state[entityTypeKey].list]
+      matchIndex = newList.findIndex(e => e.id === entity.id);
+      newList.splice(matchIndex, 1);
+      console.log("updated list: ", newList);
+      break;
+
+    case 'reset':
+      return entityTypes;
+    default:
+      return state;
+  }
+
+  newList.forEach(i => newTotal += i.amt);
+
+  return {
+    ...state,
+    [action.entityTypeKey]: {
+      ...state[action.entityTypeKey],
+      list: newList,
+      total: newTotal
+    }
+  }
+}
+
+
 export default function Summary() {
   const [entities, setEntities] = useState(entityTypes);
-  
-  const entityAdded = (entityTypeKey, newEntity) => {
+  const [entityCollection, modifyEntities] = useReducer(reducer, entityTypes);
+
+  const handleAdd = (entityTypeKey, newEntity) => {
     newEntity.id = guid();
-    const newList = entities[entityTypeKey].list.concat(newEntity);
-    updateList(entityTypeKey, newList);
-    console.log(`new ${entityTypeKey} added :`, newEntity)
+    modifyEntities({ type: 'add', entityTypeKey: entityTypeKey, entity: newEntity })
+  }
+
+  const handleUpdate = (entityTypeKey, newEntity) => {
+    modifyEntities({ type: 'update', entityTypeKey: entityTypeKey, entity: newEntity })
+  }
+
+  const handleDelete = (entityTypeKey, newEntity) => {
+    modifyEntities({ type: 'delete', entityTypeKey: entityTypeKey, entity: newEntity })
   }
 
   const updateList = (entityTypeKey, newList) => {
@@ -67,9 +122,9 @@ export default function Summary() {
 
   return (
     <Grid container style={{ marginTop: 10 }} spacing={3}>
-      <EntityTypeGridItem entityType={entities['income']} onAdd={entityAdded} xs={12} sm={12} md={4} />
-      <EntityTypeGridItem entityType={entities['qualifyingPayment']} onAdd={entityAdded} xs={12} sm={6} md={4} />
-      <EntityTypeGridItem entityType={entities['taxPayment']} onAdd={entityAdded} xs={12} sm={6} md={4} />
+      <EntityTypeGridItem entityType={entityCollection['income']} onAdd={handleAdd} onUpdate={handleUpdate} onDelete={handleDelete} xs={12} sm={12} md={4} />
+      <EntityTypeGridItem entityType={entityCollection['qualifyingPayment']} onAdd={handleAdd} onUpdate={handleUpdate} onDelete={handleDelete} xs={12} sm={6} md={4} />
+      <EntityTypeGridItem entityType={entityCollection['taxPayment']} onAdd={handleAdd} xs={12} onUpdate={handleUpdate} onDelete={handleDelete} sm={6} md={4} />
     </Grid>
   );
 }

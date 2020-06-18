@@ -17,7 +17,7 @@ import {
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
+    //backgroundColor: theme.palette.background.paper,
   },
   entityListDialogAppBar: {
     position: 'relative',
@@ -55,7 +55,7 @@ export default function EntityListDialog(props) {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <EntityList entityType={props.entityType} onAdd={props.onAdd} showNewEntityDialog={props.showNewEntityDialog} />
+      <EntityList entityType={props.entityType} onAdd={props.onAdd} onUpdate={props.onUpdate} onDelete={props.onDelete} showNewEntityDialog={props.showNewEntityDialog} />
     </Dialog>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -18,13 +18,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NewEntityDialog(props) {
 
-  const emptyEntity = {
-    date: new Date().toISOString().slice(0, 10),
-    desc: '',
-    amt: 0
-  };
-
-  const [newEntity, setNewEntity] = useState(emptyEntity);
+  const [newEntity, setNewEntity] = useState(props.entity);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
@@ -37,8 +31,12 @@ export default function NewEntityDialog(props) {
       amt: parseInt(newEntity.amt)
     };
 
+    if (newEntity.id){
+      entity.id = newEntity.id;
+    }
+
     props.onSubmit(props.entityType.key, entity, keepOpen);
-    setNewEntity(emptyEntity);
+    setNewEntity(props.entity);
   }
 
   const handleInputChange = (event) => {
@@ -54,20 +52,26 @@ export default function NewEntityDialog(props) {
 
   }
 
+  useEffect(() => {
+    setNewEntity(props.entity);
+  }, [props.open])
+  
   const DialogTitleBar = () => {
+
+    const titleText = (newEntity.id?'Edit ':'New ') + props.entityType.name;
 
     const titleFullScreen = (
       <AppBar position="static" >
         <Toolbar>
           <Typography variant="h5" style={{ flexGrow: 1 }}>
-            New {props.entityType.name} - TaxAutonomy
+           {titleText} - TaxAutonomy
           </Typography>
         </Toolbar>
       </AppBar>
     );
 
-    const titleNormal = (<DialogTitle id="form-dialog-title">New {props.entityType.name}</DialogTitle>);
-
+    const titleNormal = (<DialogTitle id="form-dialog-title">{titleText}</DialogTitle>);
+    
     return (fullScreen ? titleFullScreen : titleNormal)
   };
 
@@ -110,7 +114,7 @@ export default function NewEntityDialog(props) {
       </DialogContent>
       <DialogActions>
         <Button id="save" onClick={() => handleSubmit(false)} variant="outlined" color="primary">Save</Button>
-        <Button onClick={() => handleSubmit(true)} variant="outlined" color="primary">Save & Add New</Button>
+        {newEntity.id?'':<Button onClick={() => handleSubmit(true)} variant="outlined" color="primary">Save & Add New</Button>}
         <Button onClick={() => props.onCancel()} variant="outlined" color="primary">Cancel</Button>
       </DialogActions>
     </Dialog>

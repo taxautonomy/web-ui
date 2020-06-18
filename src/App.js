@@ -18,32 +18,31 @@ const useStyles = makeStyles((theme) => ({
 
 const theme = createMuiTheme({
   palette:{
-    primary:blueGrey
+    //primary:blueGrey,
+    //type:'dark'
   }
 });
 
 export default function App() {
-  const baseUrl = new Config().getApiHost();
   const classes = useStyles();
-
 
   return (
     <React.Fragment>
       <CssBaseline />
       <ThemeProvider theme={theme}>
-      <AppBar position="static">
+      <AppBar position="static" color="primary">
         <Toolbar>
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon />
           </IconButton>
           <Typography variant="h5" >
-            TaxAutonomy
+            {Config.appTitle}
           </Typography>
         </Toolbar>
       </AppBar>
       <Container maxWidth="lg">
         <Router>
-          <Route exact path="/" component={Summary} />
+  <Route exact path="/" component={Summary} />
           <Route exact path="/diff" component={TaxDiff} />
           <Route path="/cal" component={TaxCal} />
         </Router>
