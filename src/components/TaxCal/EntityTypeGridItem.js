@@ -4,7 +4,7 @@ import  EntityListDialog  from './EntityListDialog';
 import SummaryCard from "./SummaryCard";
 
 export default function EntityTypeGridItem(props) {
-  const { entityType, onAdd, onUpdate, ...other } = props;
+  const { entityType, onAdd, onUpdate, onDelete, ...other } = props;
   const [openEntityListDialog, setOpenEntityListDialog] = useState(false);
   const [openNewEntityDialog, setOpenNewEntityDialog] = useState(false);
 
@@ -37,7 +37,7 @@ export default function EntityTypeGridItem(props) {
         open={openEntityListDialog}
         showNewEntityDialog={openNewEntityDialog}
         onClose={() => hideEntityListDialog()}
-        onUpdate={handleUpdate} onAdd={handleAdd} onDelete={props.onDelete}/>
+        onUpdate={handleUpdate} onAdd={handleAdd} onDelete={onDelete}/>
     </Grid>
   );
 }

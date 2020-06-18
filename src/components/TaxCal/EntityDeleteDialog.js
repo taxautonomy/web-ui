@@ -11,29 +11,31 @@ import {
 	AppBar,
 	Toolbar,
 	Transition,
-  useMediaQuery,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button
+	useMediaQuery,
+	DialogTitle,
+	DialogContent,
+	DialogActions,
+	Button,
+	Card,
+	CardContent
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
-root: {
-	flexGrow: 1,
-	//backgroundColor: theme.palette.background.paper,
-},
-entityListDialogAppBar: {
-	position: 'relative',
-},
-entityListDialogTitle: {
-	marginLeft: theme.spacing(2),
-	flex: 1,
-},
-entityListDialogPaper: {
-	minHeight: '90vh',
-	maxHeight: '90vh',
-},
+	root: {
+		flexGrow: 1,
+		//backgroundColor: theme.palette.background.paper,
+	},
+	entityListDialogAppBar: {
+		position: 'relative',
+	},
+	entityListDialogTitle: {
+		marginLeft: theme.spacing(2),
+		flex: 1,
+	},
+	entityListDialogPaper: {
+		minHeight: '90vh',
+		maxHeight: '90vh',
+	},
 }));
 
 export default function EntityDeleteDialog(props) {
@@ -62,10 +64,10 @@ export default function EntityDeleteDialog(props) {
 		return (fullScreen ? titleFullScreen : titleNormal)
 	};
 
-  const handleClickYes = () => {
-    console.log("Deleting Entity: ", entity);
-    props.onSubmit(entityType.key, entity);
-  }
+	const handleClickYes = () => {
+		console.log("Deleting Entity: ", entity);
+		props.onSubmit(entityType.key, entity);
+	}
 
 	return (
 		<Dialog
@@ -73,15 +75,20 @@ export default function EntityDeleteDialog(props) {
 			open={props.open}>
 			<DialogTitleBar />
 			<DialogContent>
-				<Typography>Are you sure to delete the following {entityType.name} ?</Typography>
-				<Typography>Date: {entity.date}</Typography>
-				<Typography>Description: {entity.desc}</Typography>
-				<Typography>Amount: {entity.amt.toFixed(2)}</Typography>
+				<Typography variant="h7">Are you sure to delete the following {entityType.name} ?</Typography>
+				<Card>
+					<CardContent>
+						<Typography>Date: {entity.date}</Typography>
+						<Typography>Description: {entity.desc}</Typography>
+						<Typography>Amount: {entity.amt.toFixed(2)}</Typography>
+					</CardContent>
+				</Card>
+
 			</DialogContent>
-      <DialogActions>
-        <Button onClick={() => handleClickYes()} variant="outlined" color="primary">Yes</Button>
-        <Button onClick={() => props.onCancel()} variant="outlined" color="primary">No</Button>
-      </DialogActions>
+			<DialogActions>
+				<Button onClick={() => handleClickYes()} variant="outlined" color="primary">Yes</Button>
+				<Button onClick={() => props.onCancel()} variant="outlined" color="primary">No</Button>
+			</DialogActions>
 		</Dialog>
 	);
 }

@@ -97,7 +97,7 @@ export default function EntityList(props) {
               <TableCell>Date</TableCell>
               <TableCell>Description</TableCell>
               <TableCell align="right">Amount (LKR)</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell  size="small">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -106,7 +106,7 @@ export default function EntityList(props) {
                 <TableCell component="th" scope="row">{entity.date.toISOString().slice(0, 10)}</TableCell>
                 <TableCell >{entity.desc}</TableCell>
                 <TableCell align="right">{entity.amt.toFixed(2)}</TableCell>
-                <TableCell>
+                <TableCell size="small">
                   <IconButton size="small" onClick={() => openEditEntityDialog(entity)}><EditIcon /></IconButton>
                   <IconButton size="small" onClick={() => openDeleteEntityDialog(entity)}><DeleteIcon /></IconButton>
                 </TableCell>
@@ -118,6 +118,7 @@ export default function EntityList(props) {
             <TableRow>
               <TableCell colSpan="2"><Typography variant="h6">Total</Typography></TableCell>
               <TableCell align="right"><Typography variant="h6">{entityType.total.toFixed(2)}</Typography></TableCell>
+              <TableCell align="right"></TableCell>
             </TableRow>
           </TableFooter>
         </Table>
