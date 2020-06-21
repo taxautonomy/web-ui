@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function NewEntityDialog(props) {
+export default function EntityEditDialog(props) {
 
   const [newEntity, setNewEntity] = useState(props.entity);
 

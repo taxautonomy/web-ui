@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '5px'
   }
 }));
-export default function SummaryCard(props) {
+export default function EntitySummaryCard(props) {
   const { entityType } = props;
   const classes = useStyles();
 

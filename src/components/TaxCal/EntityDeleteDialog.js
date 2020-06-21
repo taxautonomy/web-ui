@@ -75,7 +75,7 @@ export default function EntityDeleteDialog(props) {
 			open={props.open}>
 			<DialogTitleBar />
 			<DialogContent>
-				<Typography variant="h7">Are you sure to delete the following {entityType.name} ?</Typography>
+				<Typography variant="subtitle1">Are you sure to delete the following {entityType.name} ?</Typography>
 				<Card>
 					<CardContent>
 						<Typography>Date: {entity.date}</Typography>

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Grid } from '@material-ui/core';
 import  EntityListDialog  from './EntityListDialog';
-import SummaryCard from "./SummaryCard";
+import EntitySummaryCard from "./EntitySummaryCard";
+import EntitySummaryCardSmall from "./EntitySummaryCardSmall";
 
 export default function EntityTypeGridItem(props) {
   const { entityType, onAdd, onUpdate, onDelete, ...other } = props;
@@ -30,7 +31,7 @@ export default function EntityTypeGridItem(props) {
 
   return (
     <Grid item {...other}>
-      <SummaryCard entityType={entityType}
+      <EntitySummaryCard entityType={entityType}
         onClickMoreInfo={() => showEntityListDialog(false)}
         onClickAdd={() => showEntityListDialog(true)} />
       <EntityListDialog entityType={entityType}

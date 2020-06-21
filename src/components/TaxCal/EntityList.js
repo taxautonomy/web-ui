@@ -14,7 +14,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { Typography, Fab } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import NewEntityDialog from './NewEntityDialog'
+import EntityEditDialog from './EntityEditDialog'
 import EntityDeleteDialog from './EntityDeleteDialog';
 
 const useStyles = makeStyles((theme) => ({
@@ -67,10 +67,8 @@ export default function EntityList(props) {
 
   }
 
-
   const openEditEntityDialog = (entity) => {
     console.log("openEditEntityDialog.entity: ", entity)
-    //entity.date = entity.date.toISOString().slice(0,10);
     setDialogBoxEntity({
       ...entity,
       date: entity.date.toISOString().slice(0, 10)
@@ -80,7 +78,6 @@ export default function EntityList(props) {
 
   const openDeleteEntityDialog = (entity) => {
     console.log("openDeleteEntityDialog.entity: ", entity)
-    //entity.date = entity.date.toISOString().slice(0,10);
     setDialogBoxEntity({
       ...entity,
       date: entity.date.toISOString().slice(0, 10)
@@ -94,10 +91,10 @@ export default function EntityList(props) {
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Date</TableCell>
+              <TableCell style={{ width: '125px' }}>Date</TableCell>
               <TableCell>Description</TableCell>
               <TableCell align="right">Amount (LKR)</TableCell>
-              <TableCell  size="small">Actions</TableCell>
+              <TableCell size="small" style={{ width: '100px' }}></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -110,7 +107,6 @@ export default function EntityList(props) {
                   <IconButton size="small" onClick={() => openEditEntityDialog(entity)}><EditIcon /></IconButton>
                   <IconButton size="small" onClick={() => openDeleteEntityDialog(entity)}><DeleteIcon /></IconButton>
                 </TableCell>
-
               </TableRow>
             ))}
           </TableBody>
@@ -124,16 +120,11 @@ export default function EntityList(props) {
         </Table>
       </TableContainer>
 
-      <Fab variant="extended"
-        color="primary"
-        aria-label="add"
-        className={classes.fab}
-        onClick={() => openAddEntityDialog()}
-      >
+      <Fab variant="extended" color="primary" aria-label="add" className={classes.fab} onClick={() => openAddEntityDialog()}>
         <AddIcon />&nbsp;&nbsp;Add {entityType.name}
       </Fab>
-      <NewEntityDialog open={showEntityEditDialog} onSubmit={handleAddOrUpdate} onCancel={() => { setShowEntityEditDialog(false) }} entityType={entityType} entity={dialogBoxEntity} />
-      <EntityDeleteDialog open={showEntityDeleteDialog} onSubmit={handleDelete} onCancel={()=> setShowEntityDeleteDialog(false)} entityType={entityType} entity={dialogBoxEntity}/>
+      <EntityEditDialog open={showEntityEditDialog} onSubmit={handleAddOrUpdate} onCancel={() => { setShowEntityEditDialog(false) }} entityType={entityType} entity={dialogBoxEntity} />
+      <EntityDeleteDialog open={showEntityDeleteDialog} onSubmit={handleDelete} onCancel={() => setShowEntityDeleteDialog(false)} entityType={entityType} entity={dialogBoxEntity} />
     </React.Fragment>
   )
 }

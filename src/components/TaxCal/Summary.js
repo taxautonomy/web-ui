@@ -1,7 +1,11 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 import EntityTypeGridItem from './EntityTypeGridItem';
+import Config from '../../Config';
+import axios from 'axios'
+import TaxSummaryCard from './TaxSummaryCard';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -89,8 +93,10 @@ const reducer = (state, action) => {
 
 
 export default function Summary() {
-  const [entities, setEntities] = useState(entityTypes);
+  // const [entities, setEntities] = useState(entityTypes);
   const [entityCollection, modifyEntities] = useReducer(reducer, entityTypes);
+  const [taxSummary, setTaxSummary] = useState(null);
+  const baseUrl = Config.getApiHost();
 
   const handleAdd = (entityTypeKey, newEntity) => {
     newEntity.id = guid();
@@ -105,23 +111,35 @@ export default function Summary() {
     modifyEntities({ type: 'delete', entityTypeKey: entityTypeKey, entity: newEntity })
   }
 
-  const updateList = (entityTypeKey, newList) => {
-
-    let newTotal = 0;
-    newList.forEach(i => newTotal += i.amt);
-
-    setEntities({
-      ...entities,
-      [entityTypeKey]: {
-        ...entities[entityTypeKey],
-        list: newList,
-        total: newTotal
+  useEffect(() => {
+    axios.get(baseUrl + `/api/schemes/2019-2020-personal-new/taxes?i=${entityCollection['income'].total}&qp=${entityCollection['qualifyingPayment'].total}&tp=${entityCollection['taxPayment'].total}`).then(
+      response => {
+        setTaxSummary(response.data);
+        console.log(response.data);
       }
-    })
-  }
+    )
+
+  }, [entityCollection])
+  // const updateList = (entityTypeKey, newList) => {
+
+  //   let newTotal = 0;
+  //   newList.forEach(i => newTotal += i.amt);
+
+  //   setEntities({
+  //     ...entities,
+  //     [entityTypeKey]: {
+  //       ...entities[entityTypeKey],
+  //       list: newList,
+  //       total: newTotal
+  //     }
+  //   })
+  // }
 
   return (
     <Grid container style={{ marginTop: 10 }} spacing={3}>
+      <Grid item xs={12}>
+        <TaxSummaryCard taxSummary={taxSummary}/>
+      </Grid>
       <EntityTypeGridItem entityType={entityCollection['income']} onAdd={handleAdd} onUpdate={handleUpdate} onDelete={handleDelete} xs={12} sm={12} md={4} />
       <EntityTypeGridItem entityType={entityCollection['qualifyingPayment']} onAdd={handleAdd} onUpdate={handleUpdate} onDelete={handleDelete} xs={12} sm={6} md={4} />
       <EntityTypeGridItem entityType={entityCollection['taxPayment']} onAdd={handleAdd} xs={12} onUpdate={handleUpdate} onDelete={handleDelete} sm={6} md={4} />
