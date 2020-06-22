@@ -9,7 +9,6 @@ import { AppBar, Typography, Toolbar, IconButton } from '@material-ui/core';
 import Summary from './components/TaxCal/Summary';
 import MenuIcon from '@material-ui/icons/Menu'
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
-import { blueGrey } from '@material-ui/core/colors'
 const useStyles = makeStyles((theme) => ({
   menuButton: {
     marginRight: theme.spacing(2),

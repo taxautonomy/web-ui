@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Grid } from '@material-ui/core';
 import  EntityListDialog  from './EntityListDialog';
 import EntitySummaryCard from "./EntitySummaryCard";
-import EntitySummaryCardSmall from "./EntitySummaryCardSmall";
 
 export default function EntityTypeGridItem(props) {
   const { entityType, onAdd, onUpdate, onDelete, ...other } = props;

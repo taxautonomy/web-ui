@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 // Material UI
 import Table from '@material-ui/core/Table';
@@ -13,7 +13,7 @@ import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { Typography, Fab } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import EntityEditDialog from './EntityEditDialog'
 import EntityDeleteDialog from './EntityDeleteDialog';
 
@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
 export default function EntityList(props) {
 
   const classes = useStyles();
-  const theme = useTheme();
 
   const { entityType } = props;
 

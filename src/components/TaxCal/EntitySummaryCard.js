@@ -40,7 +40,7 @@ export default function EntitySummaryCard(props) {
   const classes = useStyles();
 
   const getLatestRecord = list => {
-    if (list.length == 0)
+    if (list.length === 0)
       return null;
     return list.reduce(function (a, b) { return a.date > b.date ? a : b; }, { date: new Date(0, 0, 0) });
   };

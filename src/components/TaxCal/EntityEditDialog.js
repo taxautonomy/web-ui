@@ -2,19 +2,12 @@ import React, { useState, useEffect } from 'react'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField'
 import { useMediaQuery, AppBar, Typography, Toolbar } from '@material-ui/core'
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme) => ({
-  entityListDialogPaper: {
-    minHeight: '90vh',
-    maxHeight: '90vh',
-  }
-}));
 
 export default function EntityEditDialog(props) {
 
@@ -28,7 +21,7 @@ export default function EntityEditDialog(props) {
     var entity = {
       date: new Date(newEntity.date),
       desc: newEntity.desc,
-      amt: parseInt(newEntity.amt)
+      amt: parseInt(newEntity.amt,10)
     };
 
     if (newEntity.id){
