@@ -19,6 +19,10 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     //backgroundColor: theme.palette.background.paper,
   },
+  toolBar:{
+    paddingRight:'8px'
+  },
+
   entityListDialogAppBar: {
     position: 'relative',
   },
@@ -46,7 +50,7 @@ export default function EntityListDialog(props) {
       onClose={props.onClose}
       TransitionComponent={Transition}>
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar classes={classes.toolbar}>
           <Typography variant="h5" style={{ flexGrow: 1 }}>
             {props.entityType.title} {fullScreen ? ' - TaxAutonomy' : ''}
           </Typography>

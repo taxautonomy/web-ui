@@ -70,14 +70,13 @@ export default function TaxSummaryCard(props) {
       <CardContent style={{ padding: '0' }}>
         <Table>
           <TableBody>
-            <TableRow>
-              <TableCell>
+            <TableRow><TableCell>
                 <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
                   {taxSummary && taxSummary.tax_total < 0 ? 'Refund to be claimed ' : 'Balance to be paid '}(LKR)
                 </Typography>
                 <Typography variant="body2" component="p" style={{ fontWeight: 'bold' }}>{taxSummary ? taxSummary.tax_total.toFixed(2) : '...'}</Typography>
               </TableCell>
-              {isSmallScreen ? '' : <AdditionalInfo/>}
+              {isSmallScreen ?'':<AdditionalInfo/>}
             </TableRow>
           </TableBody>
         </Table>
