@@ -40,7 +40,7 @@ export default function EntitySummaryCard(props) {
   const { entityCollection} = useContext(TaxCalculationContext);
 
   const { entityType } = props;
-  const {key, name, title, list, total} = entityCollection[entityType];
+  const {name, title, list, total} = entityCollection[entityType];
   const classes = useStyles();
 
   const getLatestRecord = list => {

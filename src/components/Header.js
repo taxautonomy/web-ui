@@ -37,9 +37,7 @@ const getSelectClasses = makeStyles((theme) => ({
 export default function Header() {
   const classes = useStyles();
   const selectClasses = getSelectClasses();
-  const taxCalContext = useContext(TaxCalculationContext);
-  const { currentScheme, setCurrentScheme } = taxCalContext;
-  console.log(taxCalContext)
+  const { currentScheme, setCurrentScheme } = useContext(TaxCalculationContext);
   const [schemes, setSchemes] = useState([]);
   const setCurrentSchemeById = schemeId => setCurrentScheme(schemes.find(scheme => scheme.id === schemeId))
   const handleSchemeChange = event => setCurrentSchemeById(event.target.value)
@@ -47,12 +45,11 @@ export default function Header() {
   useEffect(() => {
     axios.get(Config.getApiHost() + '/api/schemes').then(response => {
       setSchemes(response.data);
-      console.log(schemes)
     })
   }, [])
 
   useEffect(() => {
-    if(schemes!=undefined)
+    if(schemes !== undefined)
       setCurrentScheme(schemes.find(scheme => scheme.default))
   }, [schemes])
 

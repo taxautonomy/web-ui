@@ -18,7 +18,6 @@ class TaxForm extends Component {
     this.setState({ salary: e.target.value });
   }
   onScheme1Change = (e) => {
-    console.log('changed')
     this.setState({ scheme1: e.target.value });
   }
   onScheme2Change = (e) => {
@@ -38,7 +37,6 @@ class TaxForm extends Component {
       }
     })
 
-    console.log(schemes)
     this.props.onSubmit(schemes, this.state.salary);
   }
   raiseInputChanged() {

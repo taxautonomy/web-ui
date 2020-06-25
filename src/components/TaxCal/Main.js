@@ -64,52 +64,15 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function guid() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}
-
 export default function Calculations() {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-  const [incomeList, setIncomeList] = useState([]);
-  const [qualifyingPaymentList, setQualifyingPaymentList] = useState([]);
-  const [taxPaymentList, setTaxPaymentList] = useState([]);
 
-  let incomeTotal = 0;
-  incomeList.forEach(i => incomeTotal += i.amt);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const incomeAdded = income => {
-    income.id = guid();
-    console.log("new income:", income)
-    const newList = incomeList.concat(income);
-
-    setIncomeList(newList);
-  }
-
-  const qualifyingPaymentAdded = payment => {
-    payment.id = guid();
-    console.log("new qualifying payment:", payment)
-    const newList = qualifyingPaymentList.concat(payment);
-
-    setQualifyingPaymentList(newList);
-  }
-
-  const taxPaymentAdded = payment => {
-    payment.id = guid();
-    console.log("new tax payment:", payment)
-    const newList = taxPaymentList.concat(payment);
-
-    setTaxPaymentList(newList);
-  }
-
-  const bull = <span className={classes.bullet}>•</span>;
 
   return (
     <div className={classes.root}>
@@ -120,7 +83,6 @@ export default function Calculations() {
               <Typography className={classes.cards.title} color="textSecondary" gutterBottom>
                 Income
         </Typography>
-        <Typography variant="body2" component="p">{incomeTotal.toFixed(2)}</Typography>
             </CardContent>
             <CardActions>
             <Button size="small">more info</Button>
@@ -136,9 +98,7 @@ export default function Calculations() {
               <Typography className={classes.cards.title} color="textSecondary" gutterBottom>
                 Word of the Day
         </Typography>
-              <Typography variant="h5" component="h2">
-                be{bull}nev{bull}o{bull}lent
-        </Typography>
+
               <Typography className={classes.cards.pos} color="textSecondary">
                 adjective
         </Typography>
@@ -159,13 +119,13 @@ export default function Calculations() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <EntityList entityName="Income" onAdd={incomeAdded} list={incomeList} />
+        <EntityList entityName="Income" />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <EntityList entityName="Qualifying Payment" onAdd={qualifyingPaymentAdded} list={qualifyingPaymentList} />
+        <EntityList entityName="Qualifying Payment" />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <EntityList entityName="Tax Payment" onAdd={taxPaymentAdded} list={taxPaymentList} />
+        <EntityList entityName="Tax Payment" />
       </TabPanel>
     </div>
   );

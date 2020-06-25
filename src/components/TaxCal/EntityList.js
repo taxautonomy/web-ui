@@ -36,7 +36,7 @@ export default function EntityList(props) {
   const classes = useStyles();
 
   const { entityType } = props;
-  const {key, name, title, list, total} = entityCollection[entityType];
+  const {name, list, total} = entityCollection[entityType];
 
   const emptyEntity = {
     date: new Date().toISOString().slice(0, 10),
@@ -55,7 +55,6 @@ export default function EntityList(props) {
 
   const handleAddOrUpdate = (entity, keepOpen) => {
     setShowEntityEditDialog(keepOpen);
-    console.log(entityType)
     if (entity.id)
       updateEntity(entityType, entity);
     else
@@ -65,11 +64,9 @@ export default function EntityList(props) {
   const handleDelete = (entity) => {
     setShowEntityDeleteDialog(false);
     deleteEntity(entityType, entity);
-
   }
 
   const openEditEntityDialog = (entity) => {
-    console.log("openEditEntityDialog.entity: ", entity)
     setDialogBoxEntity({
       ...entity,
       date: entity.date.toISOString().slice(0, 10)
@@ -78,7 +75,6 @@ export default function EntityList(props) {
   }
 
   const openDeleteEntityDialog = (entity) => {
-    console.log("openDeleteEntityDialog.entity: ", entity)
     setDialogBoxEntity({
       ...entity,
       date: entity.date.toISOString().slice(0, 10)
@@ -124,7 +120,7 @@ export default function EntityList(props) {
       <Fab variant="extended" color="primary" aria-label="add" className={classes.fab} onClick={() => openAddEntityDialog()}>
         <AddIcon />&nbsp;&nbsp;Add {name}
       </Fab>
-      <EntityEditDialog open={showEntityEditDialog} onSubmit={handleAddOrUpdate} onCancel={() => { setShowEntityEditDialog(false) }} entityType={entityType} entity={dialogBoxEntity} />
+      <EntityEditDialog open={showEntityEditDialog} onSubmit={handleAddOrUpdate} onCancel={() => setShowEntityEditDialog(false)} entityType={entityType} entity={dialogBoxEntity} />
       <EntityDeleteDialog open={showEntityDeleteDialog} onSubmit={handleDelete} onCancel={() => setShowEntityDeleteDialog(false)} entityType={entityType} entity={dialogBoxEntity} />
     </React.Fragment>
   )

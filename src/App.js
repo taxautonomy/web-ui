@@ -8,7 +8,6 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core'
 import Summary from './components/TaxCal/Summary';
 import Header from './components/Header';
 import {TaxCalculationContext, EntityReducer} from './AppContext' 
-import Config from './Config';
 
 const theme = createMuiTheme({
   palette: {

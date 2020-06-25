@@ -44,8 +44,7 @@ export default function EntityDeleteDialog(props) {
   };
 
   const handleClickYes = () => {
-    console.log("Deleting Entity: ", entity);
-    props.onSubmit(entityType.key, entity);
+    props.onSubmit(entity);
   }
 
   return (

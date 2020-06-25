@@ -8,16 +8,6 @@ export default function EntityTypeGridItem(props) {
   const [openEntityListDialog, setOpenEntityListDialog] = useState(false);
   const [openNewEntityDialog, setOpenNewEntityDialog] = useState(false);
 
-  const handleAdd = (entityTypeKey, entity) => {
-    onAdd(entityTypeKey, entity);
-    setOpenNewEntityDialog(false);
-  };
-
-  const handleUpdate = (entityTypeKey, entity) => {
-    onUpdate(entityTypeKey, entity);
-    setOpenNewEntityDialog(false);
-  };
-
   const showEntityListDialog = (showNewEntityDialog) => {
     setOpenEntityListDialog(true);
     setOpenNewEntityDialog(showNewEntityDialog);

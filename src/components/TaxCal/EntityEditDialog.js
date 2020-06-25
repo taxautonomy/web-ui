@@ -9,16 +9,17 @@ import { useMediaQuery, AppBar, Typography, Toolbar } from '@material-ui/core'
 import { useTheme } from '@material-ui/core/styles';
 import { TaxCalculationContext } from '../../AppContext';
 
-
 export default function EntityEditDialog(props) {
 
   const [newEntity, setNewEntity] = useState(props.entity);
-  const {entityCollection} = useContext(TaxCalculationContext);
+  const {entityCollection, currentScheme} = useContext(TaxCalculationContext);
   const {name} = entityCollection[props.entityType];
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
-
+  const [dateHelperText, setDateHelperText] = useState('')
   const handleSubmit = (keepOpen) => {
+
+    const {start_date, end_date } = currentScheme;
 
     var entity = {
       date: new Date(newEntity.date),
@@ -26,12 +27,17 @@ export default function EntityEditDialog(props) {
       amt: parseInt(newEntity.amt,10)
     };
 
+    let isValidDate = (entity.date > new Date(start_date) && entity.date < new Date(end_date));
+    setDateHelperText(isValidDate?'':'Date should be within the scheme start date and end date');
+
     if (newEntity.id){
       entity.id = newEntity.id;
     }
 
-    props.onSubmit(entity, keepOpen);
-    setNewEntity(props.entity);
+    if (isValidDate){
+      props.onSubmit(entity, keepOpen);
+      setNewEntity(props.entity);
+    }
   }
 
   const handleInputChange = (event) => {
@@ -39,7 +45,6 @@ export default function EntityEditDialog(props) {
     const name = target.name;
     const value = name === 'schedule' ? !target.checked : target.value;
 
-    console.log(`handling the onChange event of ${name} changing to ${value}`);
     setNewEntity({
       ...newEntity,
       [name]: value
@@ -82,6 +87,8 @@ export default function EntityEditDialog(props) {
             name="date"
             value={newEntity.date}
             onChange={handleInputChange}
+            error={!(dateHelperText==='')}
+            helperText={dateHelperText}
           />
 
         </div>

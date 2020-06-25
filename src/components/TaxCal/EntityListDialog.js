@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function EntityListDialog(props) {
   const {entityCollection} = useContext(TaxCalculationContext);
-  const {name, title} = entityCollection[props.entityType];
+  const {title} = entityCollection[props.entityType];
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
