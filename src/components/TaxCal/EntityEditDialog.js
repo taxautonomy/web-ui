@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -7,12 +7,14 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField'
 import { useMediaQuery, AppBar, Typography, Toolbar } from '@material-ui/core'
 import { useTheme } from '@material-ui/core/styles';
+import { TaxCalculationContext } from '../../AppContext';
 
 
 export default function EntityEditDialog(props) {
 
   const [newEntity, setNewEntity] = useState(props.entity);
-
+  const {entityCollection} = useContext(TaxCalculationContext);
+  const {name} = entityCollection[props.entityType];
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
 
@@ -28,7 +30,7 @@ export default function EntityEditDialog(props) {
       entity.id = newEntity.id;
     }
 
-    props.onSubmit(props.entityType.key, entity, keepOpen);
+    props.onSubmit(entity, keepOpen);
     setNewEntity(props.entity);
   }
 
@@ -51,7 +53,7 @@ export default function EntityEditDialog(props) {
   
   const DialogTitleBar = () => {
 
-    const titleText = (newEntity.id?'Edit ':'New ') + props.entityType.name;
+    const titleText = (newEntity.id?'Edit ':'New ') + name;
 
     const titleFullScreen = (
       <AppBar position="static" >

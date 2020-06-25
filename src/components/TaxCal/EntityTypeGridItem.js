@@ -36,8 +36,7 @@ export default function EntityTypeGridItem(props) {
       <EntityListDialog entityType={entityType}
         open={openEntityListDialog}
         showNewEntityDialog={openNewEntityDialog}
-        onClose={() => hideEntityListDialog()}
-        onUpdate={handleUpdate} onAdd={handleAdd} onDelete={onDelete}/>
+        onClose={() => hideEntityListDialog()}/>
     </Grid>
   );
 }

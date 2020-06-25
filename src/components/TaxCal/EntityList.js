@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 
 // Material UI
 import Table from '@material-ui/core/Table';
@@ -16,6 +16,7 @@ import { Typography, Fab } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import EntityEditDialog from './EntityEditDialog'
 import EntityDeleteDialog from './EntityDeleteDialog';
+import { TaxCalculationContext } from '../../AppContext'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,10 +31,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EntityList(props) {
+  const { entityCollection, addEntity, updateEntity, deleteEntity } = useContext(TaxCalculationContext);
 
   const classes = useStyles();
 
   const { entityType } = props;
+  const {key, name, title, list, total} = entityCollection[entityType];
 
   const emptyEntity = {
     date: new Date().toISOString().slice(0, 10),
@@ -50,19 +53,18 @@ export default function EntityList(props) {
     setShowEntityEditDialog(true);
   }
 
-  const handleAddOrUpdate = (entityTypeKey, entity, keepOpen) => {
+  const handleAddOrUpdate = (entity, keepOpen) => {
     setShowEntityEditDialog(keepOpen);
-
+    console.log(entityType)
     if (entity.id)
-      props.onUpdate(entityTypeKey, entity);
+      updateEntity(entityType, entity);
     else
-      props.onAdd(entityTypeKey, entity);
-
+      addEntity(entityType, entity);
   }
 
-  const handleDelete = (entityTypeKey, entity) => {
+  const handleDelete = (entity) => {
     setShowEntityDeleteDialog(false);
-    props.onDelete(entityTypeKey, entity);
+    deleteEntity(entityType, entity);
 
   }
 
@@ -97,7 +99,7 @@ export default function EntityList(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {entityType.list.map((entity) => (
+            {list.map((entity) => (
               <TableRow key={entity.id}>
                 <TableCell component="th" scope="row">{entity.date.toISOString().slice(0, 10)}</TableCell>
                 <TableCell >{entity.desc}</TableCell>
@@ -112,7 +114,7 @@ export default function EntityList(props) {
           <TableFooter>
             <TableRow>
               <TableCell colSpan="2"><Typography variant="h6">Total</Typography></TableCell>
-              <TableCell align="right"><Typography variant="h6">{entityType.total.toFixed(2)}</Typography></TableCell>
+              <TableCell align="right"><Typography variant="h6">{total.toFixed(2)}</Typography></TableCell>
               <TableCell align="right"></TableCell>
             </TableRow>
           </TableFooter>
@@ -120,7 +122,7 @@ export default function EntityList(props) {
       </TableContainer>
 
       <Fab variant="extended" color="primary" aria-label="add" className={classes.fab} onClick={() => openAddEntityDialog()}>
-        <AddIcon />&nbsp;&nbsp;Add {entityType.name}
+        <AddIcon />&nbsp;&nbsp;Add {name}
       </Fab>
       <EntityEditDialog open={showEntityEditDialog} onSubmit={handleAddOrUpdate} onCancel={() => { setShowEntityEditDialog(false) }} entityType={entityType} entity={dialogBoxEntity} />
       <EntityDeleteDialog open={showEntityDeleteDialog} onSubmit={handleDelete} onCancel={() => setShowEntityDeleteDialog(false)} entityType={entityType} entity={dialogBoxEntity} />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { useTheme } from '@material-ui/core/styles';
 import EntityList from './EntityList';
 import CloseIcon from '@material-ui/icons/Close';
@@ -13,6 +13,7 @@ import {
   Transition,
   useMediaQuery
 } from '@material-ui/core';
+import { TaxCalculationContext } from '../../AppContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,6 +38,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EntityListDialog(props) {
+  const {entityCollection} = useContext(TaxCalculationContext);
+  const {name, title} = entityCollection[props.entityType];
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
@@ -52,14 +55,14 @@ export default function EntityListDialog(props) {
       <AppBar position="static">
         <Toolbar classes={classes.toolbar}>
           <Typography variant="h5" style={{ flexGrow: 1 }}>
-            {props.entityType.title} {fullScreen ? ' - TaxAutonomy' : ''}
+            {title} {fullScreen ? ' - TaxAutonomy' : ''}
           </Typography>
           <IconButton color="inherit" onClick={props.onClose} aria-label="close">
             <CloseIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
-      <EntityList entityType={props.entityType} onAdd={props.onAdd} onUpdate={props.onUpdate} onDelete={props.onDelete} showNewEntityDialog={props.showNewEntityDialog} />
+      <EntityList entityType={props.entityType} showNewEntityDialog={props.showNewEntityDialog} />
     </Dialog>
   );
 }

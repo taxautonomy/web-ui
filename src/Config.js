@@ -3,6 +3,8 @@ class Config{
 
     static appTitle = "TaxAutonomy";
 
+    static defaultSchemeId = '2019-2020-personal-new';
+
     static getApiHost = () => {
             var protocol = window.location.protocol;
             if(window.location.hostname === "localhost")

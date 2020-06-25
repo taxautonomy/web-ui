@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTheme } from '@material-ui/core/styles';
-import EntityList from './EntityList';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -12,10 +11,6 @@ import {
   Toolbar,
   Transition,
   useMediaQuery,
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
   Container,
   Grid, Card, CardContent, CardHeader, Avatar
 } from '@material-ui/core';

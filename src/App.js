@@ -1,52 +1,54 @@
-import React from 'react';
+import React, { useState, useReducer } from 'react';
 import TaxDiff from './components/TaxDiff/Main'
 import TaxCal from './components/TaxCal/Main'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
-import Config from './Config'
-import { AppBar, Typography, Toolbar, IconButton } from '@material-ui/core';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core'
 import Summary from './components/TaxCal/Summary';
-import MenuIcon from '@material-ui/icons/Menu'
-import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
-const useStyles = makeStyles((theme) => ({
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-}));
+import Header from './components/Header';
+import {TaxCalculationContext, EntityReducer} from './AppContext' 
+import Config from './Config';
 
 const theme = createMuiTheme({
-  palette:{
+  palette: {
     //primary:blueGrey,
     //type:'dark'
   }
 });
 
+const entityTypeArray = [
+  { key: 'income', name: 'Income', title: 'Income', list: [], total: 0 },
+  { key: 'qualifyingPayment', name: 'Qualifying Payment', title: 'Qualifying Payments', list: [], total: 0 },
+  { key: 'taxPayment', name: 'Tax Payment', title: 'Tax Payments', list: [], total: 0 }
+];
+
+const entityTypes = {};
+entityTypeArray.forEach(i => entityTypes[i.key] = i);
+
 export default function App() {
-  const classes = useStyles();
+  const [currentScheme, setCurrentScheme] = useState(null);
+  const [entityCollection, modifyEntities] = useReducer(EntityReducer, entityTypes);
+
+  const addEntity     = (entityTypeKey, newEntity) => modifyEntities({ type: 'add', entityTypeKey: entityTypeKey, entity: newEntity });
+  const updateEntity  = (entityTypeKey, newEntity) => modifyEntities({ type: 'update', entityTypeKey: entityTypeKey, entity: newEntity });
+  const deleteEntity  = (entityTypeKey, newEntity) => modifyEntities({ type: 'delete', entityTypeKey: entityTypeKey, entity: newEntity });
 
   return (
     <React.Fragment>
       <CssBaseline />
-      <ThemeProvider theme={theme}>
-      <AppBar position="static" color="primary">
-        <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h5" >
-            {Config.appTitle}
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Container maxWidth="lg">
-        <Router>
-  <Route exact path="/" component={Summary} />
-          <Route exact path="/diff" component={TaxDiff} />
-          <Route path="/cal" component={TaxCal} />
-        </Router>
-      </Container>
-      </ThemeProvider>
+      <TaxCalculationContext.Provider value={{currentScheme, setCurrentScheme, entityCollection, addEntity, updateEntity, deleteEntity}} >
+        <ThemeProvider theme={theme}>
+          <Header />
+          <Container maxWidth="lg">
+            <Router>
+              <Route exact path="/" component={Summary} />
+              <Route exact path="/diff" component={TaxDiff} />
+              <Route path="/cal" component={TaxCal} />
+            </Router>
+          </Container>
+        </ThemeProvider>
+      </TaxCalculationContext.Provider>
     </React.Fragment>
   );
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {
   Typography,
@@ -15,6 +15,9 @@ import {
   TableBody, useMediaQuery
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { TaxCalculationContext } from '../../AppContext';
+import Config from '../../Config';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -35,27 +38,47 @@ const useStyles = makeStyles((theme) => ({
     padding: '5px'
   }
 }));
+
 export default function TaxSummaryCard(props) {
-  const { taxSummary } = props;
   const classes = useStyles();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('xs'));
+  const {currentScheme, entityCollection} = useContext(TaxCalculationContext);
+  const [taxSummary, setTaxSummary] = useState(null);
+
+  useEffect(() => {
+    const i_total = entityCollection['income'].total;
+    const qp_total = entityCollection['qualifyingPayment'].total;
+    const tp_total = entityCollection['taxPayment'].total;
+
+    if (currentScheme){
+    console.log("currentScheme:", currentScheme)
+    axios.get(Config.getApiHost() + `/api/schemes/${currentScheme.id}/taxes?i=${i_total}&qp=${qp_total}&tp=${tp_total}`).then(
+      response => {
+        setTaxSummary(response.data);
+      }
+    )
+    }
+  }, [entityCollection, currentScheme])
+
 
   const AdditionalInfo = () => {
-    return (
-  <React.Fragment><TableCell>
-  <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
-    Qualifying Payments (LKR)
-  </Typography>
-  <Typography variant="body2" component="p" style={{ fontWeight: 'bold' }}>{taxSummary ? taxSummary.qp_actual.toFixed(2) : '...'}</Typography>
-</TableCell>
-  <TableCell>
-    <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
-      Taxable Income (LKR)
-  </Typography>
-    <Typography variant="body2" component="p" style={{ fontWeight: 'bold' }}>{taxSummary ? taxSummary.taxable_income.toFixed(2) : '...'}</Typography>
-  </TableCell></React.Fragment>)
-}
+    return isSmallScreen? (<TableCell/>) : (
+      <React.Fragment>
+        <TableCell>
+          <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
+            Qualifying Payments (LKR)
+        </Typography>
+          <Typography variant="body2" component="p" style={{ fontWeight: 'bold' }}>{taxSummary ? taxSummary.qp_actual.toFixed(2) : '...'}</Typography>
+        </TableCell>
+        <TableCell>
+          <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
+            Taxable Income (LKR)
+          </Typography>
+          <Typography variant="body2" component="p" style={{ fontWeight: 'bold' }}>{taxSummary ? taxSummary.taxable_income.toFixed(2) : '...'}</Typography>
+        </TableCell>
+      </React.Fragment>)
+  }
 
   return (
     <Card className={classes.card}>
@@ -66,17 +89,17 @@ export default function TaxSummaryCard(props) {
         action={<IconButton aria-label="settings">
           <MoreVertIcon />
         </IconButton>}
-        title={<Typography variant="h6">Tax Summary</Typography>} />
+        title={<Typography variant="h6">Tax Summary for {currentScheme?currentScheme.name:''}</Typography>} />
       <CardContent style={{ padding: '0' }}>
         <Table>
           <TableBody>
             <TableRow><TableCell>
-                <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
-                  {taxSummary && taxSummary.tax_total < 0 ? 'Refund to be claimed ' : 'Balance to be paid '}(LKR)
+              <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
+                {taxSummary && taxSummary.tax_total < 0 ? 'Refund to be claimed ' : 'Balance to be paid '}(LKR)
                 </Typography>
-                <Typography variant="body2" component="p" style={{ fontWeight: 'bold' }}>{taxSummary ? taxSummary.tax_total.toFixed(2) : '...'}</Typography>
-              </TableCell>
-              {isSmallScreen ?'':<AdditionalInfo/>}
+              <Typography variant="body2" component="p" style={{ fontWeight: 'bold' }}>{taxSummary ? taxSummary.tax_total.toFixed(2) : '...'}</Typography>
+            </TableCell>
+            <AdditionalInfo />
             </TableRow>
           </TableBody>
         </Table>

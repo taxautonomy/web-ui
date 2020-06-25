@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {
   Typography,
@@ -15,6 +15,7 @@ import {
   TableBody
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { TaxCalculationContext } from '../../AppContext'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -36,7 +37,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 export default function EntitySummaryCard(props) {
+  const { entityCollection} = useContext(TaxCalculationContext);
+
   const { entityType } = props;
+  const {key, name, title, list, total} = entityCollection[entityType];
   const classes = useStyles();
 
   const getLatestRecord = list => {
@@ -45,18 +49,18 @@ export default function EntitySummaryCard(props) {
     return list.reduce(function (a, b) { return a.date > b.date ? a : b; }, { date: new Date(0, 0, 0) });
   };
 
-  const latestRecord = getLatestRecord(entityType.list);
+  const latestRecord = getLatestRecord(list);
   const latestRecordString = latestRecord ? `${latestRecord.date.toDateString()} - ${latestRecord.desc} - ${latestRecord.amt.toFixed(2)}` : 'no records found';
   return (
     <Card className={classes.card}>
       <CardHeader className={classes.cardHeader}
         avatar={<Avatar size="small" aria-label="recipe" className={classes.cardAvatar}>
-          {entityType.title.substring(0, 2)}
+          {title.substring(0, 2)}
         </Avatar>}
         action={<IconButton aria-label="settings">
           <MoreVertIcon />
         </IconButton>}
-        title={<Typography variant="h6">{entityType.title}</Typography>} />
+        title={<Typography variant="h6">{title}</Typography>} />
       <CardContent style={{ padding: '0' }}>
         <Table>
           <TableBody>
@@ -65,7 +69,7 @@ export default function EntitySummaryCard(props) {
                 <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
                   Total (LKR)
                 </Typography>
-                <Typography variant="body2" component="p" style={{ fontWeight: 'bold' }}>{entityType.total.toFixed(2)}</Typography>
+                <Typography variant="body2" component="p" style={{ fontWeight: 'bold' }}>{total.toFixed(2)}</Typography>
               </TableCell>
               <TableCell>
                 <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
@@ -79,7 +83,7 @@ export default function EntitySummaryCard(props) {
       </CardContent>
       <CardActions style={{ justifyContent: 'space-between' }}>
         <Button size="small" color="primary" onClick={props.onClickMoreInfo}>more info</Button>
-        <Button size="small" color="primary" onClick={props.onClickAdd}>add {entityType.name}</Button>
+        <Button size="small" color="primary" onClick={props.onClickAdd}>add {name}</Button>
       </CardActions>
     </Card>);
 }
