@@ -10,7 +10,7 @@ export default function Summary() {
       <TaxSummaryGridItem xs={12} />
       <EntityTypeGridItem entityType='income' xs={12} sm={12} md={4} />
       <EntityTypeGridItem entityType='qualifyingPayment' xs={12} sm={6} md={4} />
-      <EntityTypeGridItem entityType='taxPayment' sm={6} md={4} />
+      <EntityTypeGridItem entityType='taxPayment' xs={12} sm={6} md={4} />
     </Grid>
   );
 }

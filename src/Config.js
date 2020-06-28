@@ -5,6 +5,8 @@ class Config{
 
     static defaultSchemeId = '2019-2020-personal-new';
 
+    static googleClientId = "624703653577-qpuf27gt07fnqg1b6iu9f8q7ioslmos2.apps.googleusercontent.com";
+
     static getApiHost = () => {
             var protocol = window.location.protocol;
             if(window.location.hostname === "localhost")

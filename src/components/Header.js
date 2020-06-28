@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Config from '../Config'
 import axios from 'axios'
 import { TaxCalculationContext } from '../AppContext'
+import { GoogleLogin, GoogleLogout } from 'react-google-login';
+
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -34,25 +36,68 @@ const getSelectClasses = makeStyles((theme) => ({
   }
 }));
 
+
+
 export default function Header() {
   const classes = useStyles();
   const selectClasses = getSelectClasses();
-  const { currentScheme, setCurrentScheme } = useContext(TaxCalculationContext);
+  const { currentScheme, setCurrentScheme, user, setUser } = useContext(TaxCalculationContext);
   const [schemes, setSchemes] = useState([]);
   const setCurrentSchemeById = schemeId => setCurrentScheme(schemes.find(scheme => scheme.id === schemeId))
   const handleSchemeChange = event => setCurrentSchemeById(event.target.value)
 
   useEffect(() => {
-    axios.get(Config.getApiHost() + '/api/schemes').then(response => {
-      setSchemes(response.data);
+    axios.get(Config.getApiHost() + '/api/schemes').then(res => {
+      setSchemes(res.data);
     })
   }, [])
 
   useEffect(() => {
-    if(schemes !== undefined)
+    if (schemes !== undefined)
       setCurrentScheme(schemes.find(scheme => scheme.default))
   }, [schemes])
 
+  const handleLogIn = (response) => {
+    console.log(response);
+    console.log('logged in', response.Qt.Au)
+    setUser(response)
+  }
+
+  const handleLogInFailure = (response) => {
+    console.log(response);
+    setUser(null)
+  }
+
+  const handleLogOut = (response) => {
+    console.log('logging out', response);
+    setUser(null);
+  }
+
+  const LoginButton = (props) => {
+    if (user)
+      return (
+        <React.Fragment>
+          {user.Qt.Au}&nbsp;&nbsp;
+          <GoogleLogout
+            clientId={Config.googleClientId}
+            buttonText="log out"
+            icon={false}
+            onLogoutSuccess={handleLogOut}
+          />
+        </React.Fragment>
+      )
+    else
+      return (
+        <GoogleLogin
+          clientId={Config.googleClientId}
+          buttonText="log in"
+          isSignedIn={true}
+          onSuccess={handleLogIn}
+          onFailure={handleLogInFailure}
+          cookiePolicy={'single_host_origin'}
+        />
+      )
+  }
   return (
     <AppBar position="static" color="primary">
       <Toolbar>
@@ -65,13 +110,14 @@ export default function Header() {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value={currentScheme?currentScheme.id:''}
+            value={currentScheme ? currentScheme.id : ''}
             onChange={handleSchemeChange} classes={selectClasses}> {
               schemes.map(scheme => (
                 <MenuItem key={scheme.id} value={scheme.id}>{scheme.name}</MenuItem>
               ))}
           </Select>
         </FormControl>
+        <LoginButton />
       </Toolbar>
     </AppBar>
   )

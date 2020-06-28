@@ -27,6 +27,7 @@ entityTypeArray.forEach(i => entityTypes[i.key] = i);
 
 export default function App() {
   const [currentScheme, setCurrentScheme] = useState(null);
+  const [user, setUser] = useState(null);
   const [entityCollection, modifyEntities] = useReducer(EntityReducer, entityTypes);
 
   const addEntity     = (entityTypeKey, newEntity) => modifyEntities({ type: 'add', entityTypeKey: entityTypeKey, entity: newEntity });
@@ -36,7 +37,7 @@ export default function App() {
   return (
     <React.Fragment>
       <CssBaseline />
-      <TaxCalculationContext.Provider value={{currentScheme, setCurrentScheme, entityCollection, addEntity, updateEntity, deleteEntity}} >
+      <TaxCalculationContext.Provider value={{currentScheme, setCurrentScheme, entityCollection, addEntity, updateEntity, deleteEntity, user, setUser}} >
         <ThemeProvider theme={theme}>
           <Header />
           <Container maxWidth="lg">

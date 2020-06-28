@@ -38,12 +38,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EntityListDialog(props) {
-  const {entityCollection} = useContext(TaxCalculationContext);
+  const {entityCollection, currentScheme} = useContext(TaxCalculationContext);
   const {title} = entityCollection[props.entityType];
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
-
+  const dialogTitle = currentScheme? `${title} [${currentScheme.name}]` : title; 
   return (
     <Dialog fullWidth={true}
       classes={fullScreen ? {} : { paper: classes.entityListDialogPaper }}
@@ -55,7 +55,7 @@ export default function EntityListDialog(props) {
       <AppBar position="static">
         <Toolbar classes={classes.toolbar}>
           <Typography variant="h5" style={{ flexGrow: 1 }}>
-            {title} {fullScreen ? ' - TaxAutonomy' : ''}
+            {dialogTitle} {fullScreen ? ' - TaxAutonomy' : ''}
           </Typography>
           <IconButton color="inherit" onClick={props.onClose} aria-label="close">
             <CloseIcon />
