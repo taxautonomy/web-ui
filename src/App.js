@@ -1,5 +1,4 @@
-import React, { useState, useReducer } from 'react';
-import TaxDiff from './components/TaxDiff/Main'
+import React, { useState, useReducer, useEffect } from 'react';
 import TaxCal from './components/TaxCal/Main'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -7,8 +6,10 @@ import Container from '@material-ui/core/Container';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core'
 import Summary from './components/TaxCal/Summary';
 import Header from './components/Header';
-import {TaxCalculationContext, EntityReducer} from './AppContext' 
-
+import { TaxCalculationContext, EntityReducer } from './AppContext'
+import LeftNav from './components/LeftNav';
+import Config from './Config'
+import axios from 'axios'
 const theme = createMuiTheme({
   palette: {
     //primary:blueGrey,
@@ -29,21 +30,38 @@ export default function App() {
   const [currentScheme, setCurrentScheme] = useState(null);
   const [user, setUser] = useState(null);
   const [entityCollection, modifyEntities] = useReducer(EntityReducer, entityTypes);
+  const [showLeftNav, setShowLeftNav] = useState(false);
+  const [schemes, setSchemes] = useState([]);
 
-  const addEntity     = (entityTypeKey, newEntity) => modifyEntities({ type: 'add', entityTypeKey: entityTypeKey, entity: newEntity });
-  const updateEntity  = (entityTypeKey, newEntity) => modifyEntities({ type: 'update', entityTypeKey: entityTypeKey, entity: newEntity });
-  const deleteEntity  = (entityTypeKey, newEntity) => modifyEntities({ type: 'delete', entityTypeKey: entityTypeKey, entity: newEntity });
+  const addEntity = (entityTypeKey, newEntity) => modifyEntities({ type: 'add', entityTypeKey: entityTypeKey, entity: newEntity });
+  const updateEntity = (entityTypeKey, newEntity) => modifyEntities({ type: 'update', entityTypeKey: entityTypeKey, entity: newEntity });
+  const deleteEntity = (entityTypeKey, newEntity) => modifyEntities({ type: 'delete', entityTypeKey: entityTypeKey, entity: newEntity });
+
+  useEffect(() => {
+    axios.get(Config.getApiHost() + '/api/schemes').then(res => {
+      setSchemes(res.data);
+    })
+  }, [])
+
+  useEffect(() => {
+    setCurrentScheme(schemes.find(scheme => scheme.default))
+  }, [schemes])
 
   return (
     <React.Fragment>
       <CssBaseline />
-      <TaxCalculationContext.Provider value={{currentScheme, setCurrentScheme, entityCollection, addEntity, updateEntity, deleteEntity, user, setUser}} >
+      <TaxCalculationContext.Provider value={{
+        currentScheme, setCurrentScheme,
+        entityCollection, addEntity, updateEntity, deleteEntity,
+        user, setUser,
+        schemes, setSchemes
+      }} >
         <ThemeProvider theme={theme}>
-          <Header />
+          <Header onClickMenu={() => setShowLeftNav(true)} />
+          <LeftNav open={showLeftNav} onClickHide={() => setShowLeftNav(false)} onBlur={() => alert('test')} />
           <Container maxWidth="lg">
             <Router>
               <Route exact path="/" component={Summary} />
-              <Route exact path="/diff" component={TaxDiff} />
               <Route path="/cal" component={TaxCal} />
             </Router>
           </Container>

@@ -1,12 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { AppBar, Typography, Toolbar, IconButton, MenuItem, FormControl, InputLabel, Select } from '@material-ui/core';
+import React, { useState, Fragment } from 'react'
+import { AppBar, Typography, Toolbar, IconButton, MenuItem, Avatar, Menu } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu'
 import { makeStyles } from '@material-ui/core/styles';
 import Config from '../Config'
-import axios from 'axios'
-import { TaxCalculationContext } from '../AppContext'
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
-
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import { useGoogleLogin } from 'react-use-googlelogin'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -22,102 +20,46 @@ const useStyles = makeStyles((theme) => ({
   schemeSelect: {
     color: '#dddddd',
     fontWeight: 700
-  }
-}));
-
-const getSelectClasses = makeStyles((theme) => ({
-  root: {
-    color: '#dddddd',
-    fontWeight: 700
-
   },
-  icon: {
-    color: '#dddddd'
+  avatar: {
+    width: theme.spacing(4),
+    height: theme.spacing(4)
   }
 }));
 
 
-
-export default function Header() {
+export default function Header(props) {
   const classes = useStyles();
-  const selectClasses = getSelectClasses();
-  const { currentScheme, setCurrentScheme, user, setUser } = useContext(TaxCalculationContext);
-  const [schemes, setSchemes] = useState([]);
-  const setCurrentSchemeById = schemeId => setCurrentScheme(schemes.find(scheme => scheme.id === schemeId))
-  const handleSchemeChange = event => setCurrentSchemeById(event.target.value)
+  const [anchorEl, setAnchorEl] = useState(null);
+  const { signIn, signOut, googleUser, isSignedIn } = useGoogleLogin({
+    clientId: Config.googleClientId,
+  })
 
-  useEffect(() => {
-    axios.get(Config.getApiHost() + '/api/schemes').then(res => {
-      setSchemes(res.data);
-    })
-  }, [])
-
-  useEffect(() => {
-    if (schemes !== undefined)
-      setCurrentScheme(schemes.find(scheme => scheme.default))
-  }, [schemes])
-
-  const handleLogIn = (response) => {
-    console.log(response);
-    console.log('logged in', response.Qt.Au)
-    setUser(response)
-  }
-
-  const handleLogInFailure = (response) => {
-    console.log(response);
-    setUser(null)
-  }
-
-  const handleLogOut = (response) => {
-    console.log('logging out', response);
-    setUser(null);
-  }
-
-  const LoginButton = (props) => {
-    if (user)
-      return (
-        <React.Fragment>
-          {user.Qt.Au}&nbsp;&nbsp;
-          <GoogleLogout
-            clientId={Config.googleClientId}
-            buttonText="log out"
-            icon={false}
-            onLogoutSuccess={handleLogOut}
-          />
-        </React.Fragment>
-      )
-    else
-      return (
-        <GoogleLogin
-          clientId={Config.googleClientId}
-          buttonText="log in"
-          isSignedIn={true}
-          onSuccess={handleLogIn}
-          onFailure={handleLogInFailure}
-          cookiePolicy={'single_host_origin'}
-        />
-      )
-  }
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  
   return (
     <AppBar position="static" color="primary">
       <Toolbar>
-        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => props.onClickMenu()}>
           <MenuIcon />
         </IconButton>
         <Typography variant="h5" style={{ flexGrow: 1 }} >{Config.appTitle}</Typography>
-        <FormControl className={classes.formControl}>
-          <InputLabel className={classes.schemeSelect} id="demo-simple-select-label">Tax Scheme: </InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={currentScheme ? currentScheme.id : ''}
-            onChange={handleSchemeChange} classes={selectClasses}> {
-              schemes.map(scheme => (
-                <MenuItem key={scheme.id} value={scheme.id}>{scheme.name}</MenuItem>
-              ))}
-          </Select>
-        </FormControl>
-        <LoginButton />
+        <IconButton onClick={(event) => setAnchorEl(event.currentTarget)}>
+          {isSignedIn ? (<Avatar className={classes.avatar} alt={googleUser.profileObj.name} src={googleUser.profileObj.imageUrl}></Avatar>) : (<AccountCircle />)}
+        </IconButton>
+        <Menu anchorEl={anchorEl} keepMounted
+          open={Boolean(anchorEl)}>
+          {isSignedIn ? (
+            <Fragment>
+            <MenuItem>Settings</MenuItem>
+            <MenuItem onClick={() => { handleClose(); signOut() }}>Log Out</MenuItem>
+            </Fragment>
+          ) : (
+              <MenuItem onClick={() => { handleClose(); signIn() }}>Log in with Google</MenuItem>
+            )}
+        </Menu>
       </Toolbar>
     </AppBar>
   )
