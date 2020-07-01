@@ -12,13 +12,12 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Card,
-  CardContent
+  Avatar, Table, TableRow, TableCell, TableBody
 } from '@material-ui/core';
 
 
 export default function LogoutDialog(props) {
-  const { signOut, googleUser, isSignedIn } = useContext(TaxCalculationContext).googleLogin;
+  const { googleUser, isSignedIn } = useContext(TaxCalculationContext).googleLogin;
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
@@ -54,7 +53,18 @@ export default function LogoutDialog(props) {
       open={props.open}>
       <DialogTitleBar />
       <DialogContent>
-        <Typography variant="subtitle1">Are you sure to sign out of the account '{isSignedIn && googleUser.profileObj.name}'?</Typography>
+        <Typography variant="subtitle1">Are you sure to sign out of the following account ?</Typography>
+        {/* {isSignedIn && <Typography display="inline"><Avatar display="inline" alt={googleUser.profileObj.name} src={googleUser.profileObj.imageUrl}></Avatar>{googleUser.profileObj.name}</Typography>} */}
+        {isSignedIn && 
+        <Table>
+          <TableBody>
+            <TableRow>
+              <TableCell><Avatar display="inline" alt={googleUser.profileObj.email} src={googleUser.profileObj.imageUrl}/></TableCell>
+              <TableCell><Typography>{googleUser.profileObj.name}&nbsp;({googleUser.profileObj.email})</Typography></TableCell>
+            </TableRow>
+          </TableBody>
+          </Table>
+          }
       </DialogContent>
       <DialogActions>
         <Button onClick={() => handleClickYes()} variant="outlined" color="primary">Yes</Button>

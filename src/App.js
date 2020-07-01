@@ -30,7 +30,6 @@ entityTypeArray.forEach(i => entityTypes[i.key] = i);
 
 export default function App() {
   const [currentScheme, setCurrentScheme] = useState(null);
-  const [user, setUser] = useState(null);
   const [entityCollection, modifyEntities] = useReducer(EntityReducer, entityTypes);
   const [showLeftNav, setShowLeftNav] = useState(false);
   const [schemes, setSchemes] = useState([]);
