@@ -1,6 +1,7 @@
 import { createContext } from 'react'
 
 export const TaxCalculationContext = createContext(null);
+export const UserContext = createContext(null);
 
 function guid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {

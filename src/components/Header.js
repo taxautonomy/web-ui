@@ -1,10 +1,13 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState, Fragment, useContext, useEffect } from 'react'
 import { AppBar, Typography, Toolbar, IconButton, MenuItem, Avatar, Menu } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu'
 import { makeStyles } from '@material-ui/core/styles';
 import Config from '../Config'
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { useGoogleLogin } from 'react-use-googlelogin'
+import LoginDialog from './LoginDialog';
+import { TaxCalculationContext } from '../AppContext'
+import LogoutDialog from './LogoutDialog';
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -31,14 +34,14 @@ const useStyles = makeStyles((theme) => ({
 export default function Header(props) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
-  const { signIn, signOut, googleUser, isSignedIn } = useGoogleLogin({
-    clientId: Config.googleClientId,
-  })
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const { signOut, googleUser, isSignedIn } = useContext(TaxCalculationContext).googleLogin;
 
   const handleClose = () => {
     setAnchorEl(null);
   };
-  
+
   return (
     <AppBar position="static" color="primary">
       <Toolbar>
@@ -47,19 +50,26 @@ export default function Header(props) {
         </IconButton>
         <Typography variant="h5" style={{ flexGrow: 1 }} >{Config.appTitle}</Typography>
         <IconButton onClick={(event) => setAnchorEl(event.currentTarget)}>
-          {isSignedIn ? (<Avatar className={classes.avatar} alt={googleUser.profileObj.name} src={googleUser.profileObj.imageUrl}></Avatar>) : (<AccountCircle />)}
-        </IconButton>
-        <Menu anchorEl={anchorEl} keepMounted
-          open={Boolean(anchorEl)}>
           {isSignedIn ? (
-            <Fragment>
+            <Avatar className={classes.avatar} alt={googleUser.profileObj.name} src={googleUser.profileObj.imageUrl}></Avatar>
+          ):(
+          <AccountCircle />
+          )}
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl} keepMounted
+          open={Boolean(anchorEl)}>
+          {isSignedIn && (
             <MenuItem>Settings</MenuItem>
-            <MenuItem onClick={() => { handleClose(); signOut() }}>Log Out</MenuItem>
-            </Fragment>
-          ) : (
-              <MenuItem onClick={() => { handleClose(); signIn() }}>Log in with Google</MenuItem>
-            )}
+          )}
+          {isSignedIn ? (
+            <MenuItem onClick={() => { handleClose(); setShowLogoutDialog(true) }}>Log Out</MenuItem>
+          ):(
+            <MenuItem onClick={() => { handleClose(); setShowLoginDialog(true) }}>Log in</MenuItem>
+          )}
         </Menu>
+        <LoginDialog open={showLoginDialog} onClose={() => setShowLoginDialog(false)} />
+        <LogoutDialog open={showLogoutDialog} onSubmit={()=> {signOut(); setShowLogoutDialog(false)}} onClose={() => setShowLogoutDialog(false)} />
       </Toolbar>
     </AppBar>
   )

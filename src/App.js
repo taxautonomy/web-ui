@@ -10,6 +10,8 @@ import { TaxCalculationContext, EntityReducer } from './AppContext'
 import LeftNav from './components/LeftNav';
 import Config from './Config'
 import axios from 'axios'
+import { useGoogleLogin } from 'react-use-googlelogin'
+
 const theme = createMuiTheme({
   palette: {
     //primary:blueGrey,
@@ -32,7 +34,9 @@ export default function App() {
   const [entityCollection, modifyEntities] = useReducer(EntityReducer, entityTypes);
   const [showLeftNav, setShowLeftNav] = useState(false);
   const [schemes, setSchemes] = useState([]);
-
+  const googleLogin = useGoogleLogin({
+    clientId: Config.googleClientId,
+})
   const addEntity = (entityTypeKey, newEntity) => modifyEntities({ type: 'add', entityTypeKey: entityTypeKey, entity: newEntity });
   const updateEntity = (entityTypeKey, newEntity) => modifyEntities({ type: 'update', entityTypeKey: entityTypeKey, entity: newEntity });
   const deleteEntity = (entityTypeKey, newEntity) => modifyEntities({ type: 'delete', entityTypeKey: entityTypeKey, entity: newEntity });
@@ -53,7 +57,7 @@ export default function App() {
       <TaxCalculationContext.Provider value={{
         currentScheme, setCurrentScheme,
         entityCollection, addEntity, updateEntity, deleteEntity,
-        user, setUser,
+        googleLogin,
         schemes, setSchemes
       }} >
         <ThemeProvider theme={theme}>
