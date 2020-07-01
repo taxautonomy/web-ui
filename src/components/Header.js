@@ -41,35 +41,37 @@ export default function Header(props) {
     setAnchorEl(null);
   };
 
-  const AccountMenu = props =>(<Menu
-    anchorEl={anchorEl} keepMounted
-    open={Boolean(anchorEl)}>
+  const AccountMenu = props => (
+    <Menu onClose={handleClose}
+      anchorEl={anchorEl} keepMounted
+      open={Boolean(anchorEl)}>
       <MenuItem>Settings</MenuItem>
       <MenuItem onClick={() => { handleClose(); setShowLogoutDialog(true) }}>Sign Out</MenuItem>
-  </Menu>);
+    </Menu>);
 
   return (
     <AppBar position="static" color="primary">
       <Toolbar>
-
         <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => props.onClickMenu()}>
           <MenuIcon />
         </IconButton>
         <Typography variant="h5" style={{ flexGrow: 1 }} >{Config.appTitle}</Typography>
-        
-          {isSignedIn ? (
-                <IconButton onClick={(event) => setAnchorEl(event.currentTarget)}>
-                <Avatar className={classes.avatar} alt={googleUser.profileObj.name} src={googleUser.profileObj.imageUrl}></Avatar>
-            </IconButton>
-          ):(
-            <IconButton onClick={() => { handleClose(); setShowLoginDialog(true) }}><AccountCircle/></IconButton>
+        {isSignedIn ? (
+          <IconButton onClick={(event) => setAnchorEl(event.currentTarget)}>
+            <Avatar className={classes.avatar} alt={googleUser.profileObj.name} src={googleUser.profileObj.imageUrl}></Avatar>
+          </IconButton>
+        ) : (
+            <IconButton onClick={() => { handleClose(); setShowLoginDialog(true) }}><AccountCircle /></IconButton>
           )}
-          {isSignedIn && (
-            
-            <AccountMenu/>
-          )}
-        <LoginDialog open={showLoginDialog} onSubmit={(method) => {setShowLoginDialog(false);signIn()}} onClose={() => setShowLoginDialog(false)} />
-        <LogoutDialog open={showLogoutDialog} onSubmit={()=> {signOut(); setShowLogoutDialog(false)}} onCancel={() => setShowLogoutDialog(false)} />
+        {isSignedIn && (
+          <AccountMenu />
+        )}
+        <LoginDialog open={showLoginDialog}
+          onSubmit={(method) => { setShowLoginDialog(false); signIn() }}
+          onClose={() => setShowLoginDialog(false)} />
+        <LogoutDialog open={showLogoutDialog}
+          onSubmit={() => { signOut(); setShowLogoutDialog(false) }}
+          onCancel={() => setShowLogoutDialog(false)} />
       </Toolbar>
     </AppBar>
   )
