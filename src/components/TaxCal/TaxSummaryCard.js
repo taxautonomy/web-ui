@@ -47,12 +47,12 @@ export default function TaxSummaryCard(props) {
   const [taxSummary, setTaxSummary] = useState(null);
 
   useEffect(() => {
-    const i_total = entityCollection['income'].total;
-    const qp_total = entityCollection['qualifyingPayment'].total;
-    const tp_total = entityCollection['taxPayment'].total;
+    const i_total = entityCollection['in'].total;
+    const qp_total = entityCollection['qp'].total;
+    const tp_total = entityCollection['tp'].total;
 
     if (currentScheme) {
-      axios.get(Config.getApiHost() + `/api/schemes/${currentScheme.id}/taxes?i=${i_total}&qp=${qp_total}&tp=${tp_total}`).then(
+      axios.get(Config.getApiHost() + `/api/schemes/${currentScheme.id}/taxes?in=${i_total}&qp=${qp_total}&tp=${tp_total}`).then(
         response => {
           setTaxSummary(response.data);
         }
