@@ -43,7 +43,6 @@ export default function Home(props) {
     }, [backdropOpen])
 
     const backgroundImage = process.env.PUBLIC_URL + '/background.jpg'
-    console.log(process.env.PUBLIC_URL)
     return (
        <Container>
             <Backdrop className={classes.backdrop} open={backdropOpen}>
