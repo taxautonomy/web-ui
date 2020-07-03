@@ -12,6 +12,7 @@ import Config from './Config'
 import axios from 'axios'
 import { useGoogleLogin } from 'react-use-googlelogin'
 import LoginDialog from './components/LoginDialog';
+import Home from './components/Home';
 
 const theme = createMuiTheme({
   palette: {
@@ -53,11 +54,11 @@ export default function App() {
         setUser(res.data)
       })
     }
-    else {
-      axios.get(Config.getApiHost() + '/api/schemes').then(res => {
-        setSchemes(res.data);
-      })
-    }
+    // else {
+    //   axios.get(Config.getApiHost() + '/api/schemes').then(res => {
+    //     setSchemes(res.data);
+    //   })
+    // }
   }, [isSignedIn])
 
   useEffect(() => {
@@ -105,9 +106,10 @@ export default function App() {
             </Container>
             </Fragment>
           ):(
-            <LoginDialog open={showLoginDialog}
-            onSubmit={(method) => { setShowLoginDialog(false); signIn() }}
-            onClose={() => setShowLoginDialog(false)} />
+            <Home/>
+            // <LoginDialog open={showLoginDialog}
+            // onSubmit={(method) => { setShowLoginDialog(false); signIn() }}
+            // onClose={() => setShowLoginDialog(false)} />
           )}
           
         </ThemeProvider>

@@ -34,7 +34,9 @@ export default function LoginDialog(props) {
                     </Button>
                 </div>
                 <div>
-                    <Button style={{width:'100%'}} size="large" onClick={() => props.onClose()} color="primary">Continue as a Guest</Button>
+                    <Button disabled={true} style={{width:'100%'}} 
+                    size="large" onClick={() => props.onClose()} 
+                    color="primary">Continue as a Guest</Button>
                 </div>
                 <div>
                 </div>
