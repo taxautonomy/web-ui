@@ -13,8 +13,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Home(props) {
-    const { signIn, signOut, googleUser, isSignedIn } = useContext(TaxCalculationContext).googleLogin;
+export default function Home() {
+    const { signIn, googleUser, isSignedIn } = useContext(TaxCalculationContext).googleLogin;
 
     const [showLoginDialog, setShowLoginDialog] = useState(false);
 
@@ -42,14 +42,13 @@ export default function Home(props) {
 
     }, [backdropOpen])
 
-    const backgroundImage = process.env.PUBLIC_URL + '/background.jpg'
     return (
        <Container>
             <Backdrop className={classes.backdrop} open={backdropOpen}>
         <CircularProgress/>
       </Backdrop>
       <LoginDialog open={showLoginDialog}
-            onSubmit={(method) => { setShowLoginDialog(false); signIn() }}
+            onSubmit={() => { setShowLoginDialog(false); signIn() }}
             onClose={() => setShowLoginDialog(false)} />
       </Container>
     )

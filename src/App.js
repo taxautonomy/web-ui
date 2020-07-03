@@ -11,7 +11,6 @@ import LeftNav from './components/LeftNav';
 import Config from './Config'
 import axios from 'axios'
 import { useGoogleLogin } from 'react-use-googlelogin'
-import LoginDialog from './components/LoginDialog';
 import Home from './components/Home';
 
 const theme = createMuiTheme({
@@ -38,12 +37,11 @@ export default function App() {
   const googleLogin = useGoogleLogin({
     clientId: Config.googleClientId,
   })
-  const { isSignedIn, googleUser, signIn } = googleLogin;
+  const { isSignedIn, googleUser } = googleLogin;
   const [user, setUser] = useState(null);
   const addEntity = (entityTypeKey, newEntity) => modifyEntities({ type: 'add', entityTypeKey: entityTypeKey, entity: newEntity });
   const updateEntity = (entityTypeKey, newEntity) => modifyEntities({ type: 'update', entityTypeKey: entityTypeKey, entity: newEntity });
   const deleteEntity = (entityTypeKey, newEntity) => modifyEntities({ type: 'delete', entityTypeKey: entityTypeKey, entity: newEntity });
-  const [showLoginDialog, setShowLoginDialog] = useState(true);
 
   useEffect(() => {
     console.log('signed in', isSignedIn)
@@ -54,11 +52,7 @@ export default function App() {
         setUser(res.data)
       })
     }
-    // else {
-    //   axios.get(Config.getApiHost() + '/api/schemes').then(res => {
-    //     setSchemes(res.data);
-    //   })
-    // }
+
   }, [isSignedIn])
 
   useEffect(() => {
@@ -107,9 +101,6 @@ export default function App() {
             </Fragment>
           ):(
             <Home/>
-            // <LoginDialog open={showLoginDialog}
-            // onSubmit={(method) => { setShowLoginDialog(false); signIn() }}
-            // onClose={() => setShowLoginDialog(false)} />
           )}
           
         </ThemeProvider>

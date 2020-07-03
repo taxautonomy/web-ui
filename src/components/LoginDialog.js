@@ -4,7 +4,7 @@ import { useTheme } from '@material-ui/core/styles';
 export default function LoginDialog(props) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
-
+    const googleSignInButtonImage = process.env.PUBLIC_URL + '/google_signin_button.png'
     const DialogTitleBar = () => {
 
         const titleText = "Sign in to TaxAutonomy"
@@ -30,7 +30,7 @@ export default function LoginDialog(props) {
             <DialogContent>
                 <div>
                     <Button style={{width:'100%'}} onClick={() => props.onSubmit('google')}>
-                        <img alt="sign in with google" src="https://developers.google.com/identity/images/btn_google_signin_light_normal_web.png" />
+                        <img alt="sign in with google" src={googleSignInButtonImage} />
                     </Button>
                 </div>
                 <div>
