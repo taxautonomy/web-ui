@@ -58,7 +58,7 @@ export default function TaxSummaryCard(props) {
         }
       )
     }
-  }, [entityCollection, currentScheme])
+  }, [entityCollection])
 
   const AdditionalInfo = () => {
     return isSmallScreen ? (<TableCell />) : (

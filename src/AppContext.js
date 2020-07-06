@@ -10,7 +10,7 @@ function guid() {
     });
   }
   
-  export const InitListReducer = (state, action) => {
+  export const InitListReducerOld = (state, action) => {
     const list = action.list.filter(tx => tx.type === action.type)
     let total = 0;
     list.forEach(tx => total+=tx.amt)
@@ -24,6 +24,27 @@ function guid() {
       }
     }
   }
+
+  export const InitListReducer = (state, action) => {
+    const types = action.types;
+
+    const newState = {...state};
+
+    types.forEach( t => {
+      const list = action.list.filter(tx => tx.type === t)
+      let total = 0;
+      list.forEach(tx => total+=tx.amt)
+
+      newState[t] = {
+        ...state[t], 
+        list:list, 
+        total: total
+      }
+    })
+
+    return newState
+  }
+
   export const EntityReducer = (state, action) => {
   
     const { type, entityTypeKey, entity } = action;

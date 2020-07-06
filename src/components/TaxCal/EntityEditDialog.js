@@ -24,7 +24,8 @@ export default function EntityEditDialog(props) {
     var entity = {
       date: new Date(newEntity.date),
       desc: newEntity.desc,
-      amt: parseInt(newEntity.amt,10)
+      amt: parseInt(newEntity.amt,10),
+      type: props.entityType
     };
 
     let isValidDate = (entity.date > new Date(start_date) && entity.date < new Date(end_date));

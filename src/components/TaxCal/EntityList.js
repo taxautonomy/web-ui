@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 
 // Material UI
 import Table from '@material-ui/core/Table';
@@ -17,12 +17,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import EntityEditDialog from './EntityEditDialog'
 import EntityDeleteDialog from './EntityDeleteDialog';
 import { TaxCalculationContext } from '../../AppContext'
-import Config from '../../Config'
-import axios from 'axios'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    //backgroundColor: theme.palette.background.paper,
     position: 'relative',
   },
   fab: {
@@ -33,34 +30,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EntityList(props) {
-  const { entityCollection, addEntity, updateEntity, deleteEntity, currentScheme } = useContext(TaxCalculationContext);
+  const { entityCollection, addEntity, updateEntity, deleteEntity } = useContext(TaxCalculationContext);
 
   const classes = useStyles();
 
   const { entityType } = props;
   const { list, name, total } = entityCollection[entityType];
 
-  // const [list, setList] = useState([])
-
   const emptyEntity = {
     date: new Date().toISOString().slice(0, 10),
     desc: '',
-    amt: 0
+    amt: 0,
+    type: entityType
   };
 
   const [showEntityEditDialog, setShowEntityEditDialog] = useState(props.showNewEntityDialog ? props.showNewEntityDialog : false);
   const [showEntityDeleteDialog, setShowEntityDeleteDialog] = useState(false);
   const [dialogBoxEntity, setDialogBoxEntity] = useState(emptyEntity);
-
-  // useEffect(() => {
-  //   if (currentScheme) {
-  //     console.log('currentScheme:', currentScheme)
-  //     axios.get(Config.getApiHost() + '/api/ws/' + currentScheme.id + '/tx?type=' + entityType).then(res => {
-  //       console.log(res.data)
-  //       setList(res.data)
-  //     })
-  //   }
-  // }, [currentScheme])
 
   const openAddEntityDialog = () => {
     setDialogBoxEntity(emptyEntity);
@@ -70,14 +56,14 @@ export default function EntityList(props) {
   const handleAddOrUpdate = (entity, keepOpen) => {
     setShowEntityEditDialog(keepOpen);
     if (entity.id)
-      updateEntity(entityType, entity);
+      updateEntity(entity);
     else
-      addEntity(entityType, entity);
+      addEntity(entity);
   }
 
   const handleDelete = (entity) => {
     setShowEntityDeleteDialog(false);
-    deleteEntity(entityType, entity);
+    deleteEntity(entity);
   }
 
   const openEditEntityDialog = (entity) => {

@@ -6,7 +6,7 @@ import Container from '@material-ui/core/Container';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core'
 import Summary from './components/TaxCal/Summary';
 import Header from './components/Header';
-import { TaxCalculationContext, EntityReducer, InitListReducer } from './AppContext'
+import { TaxCalculationContext, InitListReducer } from './AppContext'
 import LeftNav from './components/LeftNav';
 import Config from './Config'
 import axios from 'axios'
@@ -31,7 +31,6 @@ entityTypeArray.forEach(i => entityTypes[i.key] = i);
 
 export default function App() {
   const [currentScheme, setCurrentScheme] = useState(null);
-  // const [entityCollection, modifyEntities] = useReducer(EntityReducer, entityTypes);
   const [entityCollection, initList] = useReducer(InitListReducer, entityTypes);
   const [showLeftNav, setShowLeftNav] = useState(false);
   const [schemes, setSchemes] = useState([]);
@@ -40,46 +39,32 @@ export default function App() {
   })
   const { isSignedIn, googleUser } = googleLogin;
   const [user, setUser] = useState(null);
-  // const addEntity = (entityTypeKey, newEntity) => modifyEntities({ type: 'add', entityTypeKey: entityTypeKey, entity: newEntity });
-  // const updateEntity = (entityTypeKey, newEntity) => modifyEntities({ type: 'update', entityTypeKey: entityTypeKey, entity: newEntity });
-  // const deleteEntity = (entityTypeKey, newEntity) => modifyEntities({ type: 'delete', entityTypeKey: entityTypeKey, entity: newEntity });
-
-  const addEntity = (entityTypeKey, newEntity) => {
-    newEntity['type'] = entityTypeKey;
-    axios.post(Config.getApiHost() + '/api/ws/' + currentScheme.id + '/tx', newEntity).then(res => {
-      refreshList(entityTypeKey)
-    })
-  }
-
-  const updateEntity = (entityTypeKey, newEntity) => {
-    console.log('updating')
-    newEntity['type'] = entityTypeKey;
-    axios.post(Config.getApiHost() + '/api/ws/' + currentScheme.id + '/tx/' + newEntity.id, newEntity).then(res => {
-      refreshList(entityTypeKey)
-    })
-  }
-  const deleteEntity = (entityTypeKey, newEntity) => {
-    console.log('deleting')
-    newEntity['type'] = entityTypeKey;
-    axios.delete(Config.getApiHost() + '/api/ws/' + currentScheme.id + '/tx/' + newEntity.id).then(res => {
-      refreshList(entityTypeKey)
-    })
-  }
 
   const refreshList = (entityTypeKey) => {
     axios.get(Config.getApiHost() + '/api/ws/' + currentScheme.id + '/tx?type=' + entityTypeKey).then(getResponse => {
-      initList({type:entityTypeKey, list: getResponse.data})
+      initList({types:[entityTypeKey], list: getResponse.data})
     })
   }
-  const populateEntities = (entities) => {
-    entityTypeArray.forEach(i => {
-      initList({ type: i.key, list: entities })
+
+  const addEntity = (newEntity) => {
+    axios.post(Config.getApiHost() + '/api/ws/' + currentScheme.id + '/tx', newEntity).then(res => {
+      refreshList(newEntity.type)
     })
   }
+
+  const updateEntity = (newEntity) => {
+    axios.post(Config.getApiHost() + '/api/ws/' + currentScheme.id + '/tx/' + newEntity.id, newEntity).then(res => {
+      refreshList(newEntity.type)
+    })
+  }
+  const deleteEntity = (newEntity) => {
+    axios.delete(Config.getApiHost() + '/api/ws/' + currentScheme.id + '/tx/' + newEntity.id).then(res => {
+      refreshList(newEntity.type)
+    })
+  }
+
   useEffect(() => {
-    console.log('signed in', isSignedIn)
     if (isSignedIn) {
-      console.log(googleUser)
       axios.get(Config.getApiHost() + '/api/users?email=' + googleUser.profileObj.email).then(res => {
         setUser(res.data)
       })
@@ -90,7 +75,6 @@ export default function App() {
   useEffect(() => {
     if (user) {
       axios.get(Config.getApiHost() + '/api/users/' + user.id + '/ws').then(res => {
-        console.log(res.data)
         setSchemes(res.data)
       })
     }
@@ -102,9 +86,8 @@ export default function App() {
 
   useEffect(() => {
     if (currentScheme && isSignedIn) {
-      console.log('currentScheme', currentScheme)
       axios.get(Config.getApiHost() + '/api/ws/' + currentScheme.id + '/tx').then(res => {
-        populateEntities(res.data)
+          initList({ types: ['in','qp', 'tp'], list: res.data })
       })
     }
   }, [currentScheme])
