@@ -1,4 +1,4 @@
-import React,{useContext} from 'react';
+import React, { useContext } from 'react';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {
   Typography,
@@ -9,9 +9,9 @@ import {
   Button,
   CardHeader,
   Avatar,
-  TableCell, 
-  Table, 
-  TableRow, 
+  TableCell,
+  Table,
+  TableRow,
   TableBody
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -34,13 +34,17 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.type === 'light' ? theme.palette.grey[100] : theme.palette.grey[700],
     fontSize: '18px',
     padding: '5px'
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
   }
 }));
 export default function EntitySummaryCard(props) {
   const { entityCollection} = useContext(TaxCalculationContext);
 
   const { entityType } = props;
-  const {name, title, list, total} = entityCollection[entityType];
+  const { name, title, list, total } = entityCollection[entityType];
   const classes = useStyles();
 
   const getLatestRecord = list => {
@@ -62,7 +66,8 @@ export default function EntitySummaryCard(props) {
         </IconButton>}
         title={<Typography variant="h6">{title}</Typography>} />
       <CardContent style={{ padding: '0' }}>
-        <Table>
+
+          < Table >
           <TableBody>
             <TableRow>
               <TableCell>
@@ -81,9 +86,9 @@ export default function EntitySummaryCard(props) {
           </TableBody>
         </Table>
       </CardContent>
-      <CardActions style={{ justifyContent: 'space-between' }}>
-        <Button size="small" color="primary" onClick={props.onClickMoreInfo}>more info</Button>
-        <Button size="small" color="primary" onClick={props.onClickAdd}>add {name}</Button>
-      </CardActions>
-    </Card>);
+    <CardActions style={{ justifyContent: 'space-between' }}>
+      <Button size="small" color="primary" onClick={props.onClickMoreInfo}>more info</Button>
+      <Button size="small" color="primary" onClick={props.onClickAdd}>add {name}</Button>
+    </CardActions>
+    </Card >);
 }

@@ -36,6 +36,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.type === 'light' ? theme.palette.grey[100] : theme.palette.grey[700],
     fontSize: '18px',
     padding: '5px'
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
   }
 }));
 
@@ -43,7 +47,7 @@ export default function TaxSummaryCard(props) {
   const classes = useStyles();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('xs'));
-  const { currentScheme, entityCollection } = useContext(TaxCalculationContext);
+  const { currentScheme, entityCollection,setLoading} = useContext(TaxCalculationContext);
   const [taxSummary, setTaxSummary] = useState(null);
 
   useEffect(() => {
@@ -52,9 +56,11 @@ export default function TaxSummaryCard(props) {
     const tp_total = entityCollection['tp'].total;
 
     if (currentScheme) {
+      setLoading(true);
       axios.get(Config.getApiHost() + `/api/schemes/${currentScheme.id}/taxes?in=${i_total}&qp=${qp_total}&tp=${tp_total}`).then(
         response => {
           setTaxSummary(response.data);
+          setLoading(false);
         }
       )
     }

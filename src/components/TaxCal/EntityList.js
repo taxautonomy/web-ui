@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, Fragment } from 'react'
 
 // Material UI
 import Table from '@material-ui/core/Table';
@@ -69,7 +69,7 @@ export default function EntityList(props) {
   const openEditEntityDialog = (entity) => {
     setDialogBoxEntity({
       ...entity,
-      date: new Date(entity.date).toISOString().slice(0, 10)
+      date: entity.date.toISOString().slice(0, 10)
     });
     setShowEntityEditDialog(true);
   }
@@ -77,13 +77,13 @@ export default function EntityList(props) {
   const openDeleteEntityDialog = (entity) => {
     setDialogBoxEntity({
       ...entity,
-      date: new Date(entity.date).toISOString().slice(0, 10)
+      date: entity.date.toISOString().slice(0, 10)
     });
     setShowEntityDeleteDialog(true);
   }
 
   return (
-    <React.Fragment>
+    <Fragment>
       <TableContainer className={classes.root} component={Paper}>
         <Table aria-label="simple table">
           <TableHead>
@@ -97,7 +97,7 @@ export default function EntityList(props) {
           <TableBody>
             {list.map((entity) => (
               <TableRow key={entity.id}>
-                <TableCell component="th" scope="row">{new Date(entity.date).toISOString().slice(0, 10)}</TableCell>
+                <TableCell component="th" scope="row">{entity.date.toISOString().slice(0, 10)}</TableCell>
                 <TableCell >{entity.desc}</TableCell>
                 <TableCell align="right">{entity.amt.toFixed(2)}</TableCell>
                 <TableCell size="small">
@@ -117,11 +117,16 @@ export default function EntityList(props) {
         </Table>
       </TableContainer>
 
-      <Fab variant="extended" color="primary" aria-label="add" className={classes.fab} onClick={() => openAddEntityDialog()}>
+      <Fab variant="extended" color="primary" aria-label="add" className={classes.fab}
+        onClick={() => openAddEntityDialog()}>
         <AddIcon />&nbsp;&nbsp;Add {name}
       </Fab>
-      <EntityEditDialog open={showEntityEditDialog} onSubmit={handleAddOrUpdate} onCancel={() => setShowEntityEditDialog(false)} entityType={entityType} entity={dialogBoxEntity} />
-      <EntityDeleteDialog open={showEntityDeleteDialog} onSubmit={handleDelete} onCancel={() => setShowEntityDeleteDialog(false)} entityType={entityType} entity={dialogBoxEntity} />
-    </React.Fragment>
+      <EntityEditDialog open={showEntityEditDialog}
+        onSubmit={handleAddOrUpdate} onCancel={() => setShowEntityEditDialog(false)}
+        entityType={entityType} entity={dialogBoxEntity} />
+      <EntityDeleteDialog open={showEntityDeleteDialog}
+        onSubmit={handleDelete} onCancel={() => setShowEntityDeleteDialog(false)}
+        entityType={entityType} entity={dialogBoxEntity} />
+    </Fragment>
   )
 }

@@ -13,7 +13,10 @@ function guid() {
   export const InitListReducerOld = (state, action) => {
     const list = action.list.filter(tx => tx.type === action.type)
     let total = 0;
-    list.forEach(tx => total+=tx.amt)
+    list.forEach(tx => {
+      tx.date = new Date(tx.date)
+      total+=tx.amt
+    })
 
     return {
       ...state,
@@ -33,14 +36,29 @@ function guid() {
     types.forEach( t => {
       const list = action.list.filter(tx => tx.type === t)
       let total = 0;
-      list.forEach(tx => total+=tx.amt)
-
+      list.forEach(tx => {
+        tx.date = new Date(tx.date)
+        total+=tx.amt
+      })
       newState[t] = {
         ...state[t], 
         list:list, 
         total: total
       }
     })
+
+    return newState
+  }
+
+  export const DataLoadReducer = (state, action) => {
+    const newState = {...state};
+
+    if(action)
+      newState.loadingCount ++;
+    else
+      newState.loadingCount --;
+
+    newState.loading = newState.loadingCount > 0;
 
     return newState
   }

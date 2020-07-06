@@ -12,30 +12,29 @@ import { TaxCalculationContext } from '../../AppContext';
 export default function EntityEditDialog(props) {
 
   const [newEntity, setNewEntity] = useState(props.entity);
-  const {entityCollection, currentScheme} = useContext(TaxCalculationContext);
-  const {name} = entityCollection[props.entityType];
+  const { entityCollection, currentScheme } = useContext(TaxCalculationContext);
+  const { name } = entityCollection[props.entityType];
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
   const [dateHelperText, setDateHelperText] = useState('')
   const handleSubmit = (keepOpen) => {
 
-    const {start_date, end_date } = currentScheme;
+    const { start_date, end_date } = currentScheme;
 
     var entity = {
       date: new Date(newEntity.date),
       desc: newEntity.desc,
-      amt: parseInt(newEntity.amt,10),
+      amt: parseFloat(newEntity.amt, 10),
       type: props.entityType
     };
 
-    let isValidDate = (entity.date > new Date(start_date) && entity.date < new Date(end_date));
-    setDateHelperText(isValidDate?'':'Date should be within the scheme start date and end date');
+    let isValidDate = (entity.date > start_date && entity.date < end_date);
+    setDateHelperText(isValidDate ? '' : 'Date should be within the scheme start date and end date');
 
-    if (newEntity.id){
+    if (newEntity.id)
       entity.id = newEntity.id;
-    }
 
-    if (isValidDate){
+    if (isValidDate) {
       props.onSubmit(entity, keepOpen);
       setNewEntity(props.entity);
     }
@@ -56,23 +55,23 @@ export default function EntityEditDialog(props) {
   useEffect(() => {
     setNewEntity(props.entity);
   }, [props.open])
-  
+
   const DialogTitleBar = () => {
 
-    const titleText = (newEntity.id?'Edit ':'New ') + name;
+    const titleText = (newEntity.id ? 'Edit ' : 'New ') + name;
 
     const titleFullScreen = (
       <AppBar position="static" >
         <Toolbar>
           <Typography variant="h5" style={{ flexGrow: 1 }}>
-           {titleText} - TaxAutonomy
+            {titleText} - TaxAutonomy
           </Typography>
         </Toolbar>
       </AppBar>
     );
 
     const titleNormal = (<DialogTitle id="form-dialog-title">{titleText}</DialogTitle>);
-    
+
     return (fullScreen ? titleFullScreen : titleNormal)
   };
 
@@ -88,10 +87,9 @@ export default function EntityEditDialog(props) {
             name="date"
             value={newEntity.date}
             onChange={handleInputChange}
-            error={!(dateHelperText==='')}
+            error={!(dateHelperText === '')}
             helperText={dateHelperText}
           />
-
         </div>
         <div className="modalInputRow">
           <TextField
@@ -117,7 +115,7 @@ export default function EntityEditDialog(props) {
       </DialogContent>
       <DialogActions>
         <Button id="save" onClick={() => handleSubmit(false)} variant="outlined" color="primary">Save</Button>
-        {newEntity.id?'':<Button onClick={() => handleSubmit(true)} variant="outlined" color="primary">Save & Add New</Button>}
+        {newEntity.id ? '' : <Button onClick={() => handleSubmit(true)} variant="outlined" color="primary">Save & Add New</Button>}
         <Button onClick={() => props.onCancel()} variant="outlined" color="primary">Cancel</Button>
       </DialogActions>
     </Dialog>
