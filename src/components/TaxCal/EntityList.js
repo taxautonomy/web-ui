@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 
 // Material UI
 import Table from '@material-ui/core/Table';
@@ -17,6 +17,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import EntityEditDialog from './EntityEditDialog'
 import EntityDeleteDialog from './EntityDeleteDialog';
 import { TaxCalculationContext } from '../../AppContext'
+import Config from '../../Config'
+import axios from 'axios'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,12 +33,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EntityList(props) {
-  const { entityCollection, addEntity, updateEntity, deleteEntity } = useContext(TaxCalculationContext);
+  const { entityCollection, addEntity, updateEntity, deleteEntity, currentScheme } = useContext(TaxCalculationContext);
 
   const classes = useStyles();
 
   const { entityType } = props;
-  const {name, list, total} = entityCollection[entityType];
+  const { list, name, total } = entityCollection[entityType];
+
+  // const [list, setList] = useState([])
 
   const emptyEntity = {
     date: new Date().toISOString().slice(0, 10),
@@ -47,6 +51,16 @@ export default function EntityList(props) {
   const [showEntityEditDialog, setShowEntityEditDialog] = useState(props.showNewEntityDialog ? props.showNewEntityDialog : false);
   const [showEntityDeleteDialog, setShowEntityDeleteDialog] = useState(false);
   const [dialogBoxEntity, setDialogBoxEntity] = useState(emptyEntity);
+
+  // useEffect(() => {
+  //   if (currentScheme) {
+  //     console.log('currentScheme:', currentScheme)
+  //     axios.get(Config.getApiHost() + '/api/ws/' + currentScheme.id + '/tx?type=' + entityType).then(res => {
+  //       console.log(res.data)
+  //       setList(res.data)
+  //     })
+  //   }
+  // }, [currentScheme])
 
   const openAddEntityDialog = () => {
     setDialogBoxEntity(emptyEntity);
@@ -69,7 +83,7 @@ export default function EntityList(props) {
   const openEditEntityDialog = (entity) => {
     setDialogBoxEntity({
       ...entity,
-      date: entity.date.toISOString().slice(0, 10)
+      date: new Date(entity.date).toISOString().slice(0, 10)
     });
     setShowEntityEditDialog(true);
   }
@@ -77,7 +91,7 @@ export default function EntityList(props) {
   const openDeleteEntityDialog = (entity) => {
     setDialogBoxEntity({
       ...entity,
-      date: entity.date.toISOString().slice(0, 10)
+      date: new Date(entity.date).toISOString().slice(0, 10)
     });
     setShowEntityDeleteDialog(true);
   }
@@ -97,7 +111,7 @@ export default function EntityList(props) {
           <TableBody>
             {list.map((entity) => (
               <TableRow key={entity.id}>
-                <TableCell component="th" scope="row">{entity.date.toISOString().slice(0, 10)}</TableCell>
+                <TableCell component="th" scope="row">{new Date(entity.date).toISOString().slice(0, 10)}</TableCell>
                 <TableCell >{entity.desc}</TableCell>
                 <TableCell align="right">{entity.amt.toFixed(2)}</TableCell>
                 <TableCell size="small">

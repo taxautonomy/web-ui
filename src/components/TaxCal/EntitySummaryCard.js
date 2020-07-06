@@ -50,7 +50,7 @@ export default function EntitySummaryCard(props) {
   };
 
   const latestRecord = getLatestRecord(list);
-  const latestRecordString = latestRecord ? `${latestRecord.date.toDateString()} - ${latestRecord.desc} - ${latestRecord.amt.toFixed(2)}` : 'no records found';
+  const latestRecordString = latestRecord ? `${new Date(latestRecord.date).toDateString()} - ${latestRecord.desc} - ${latestRecord.amt.toFixed(2)}` : 'no records found';
   return (
     <Card className={classes.card}>
       <CardHeader className={classes.cardHeader}

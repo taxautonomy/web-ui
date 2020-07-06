@@ -4,7 +4,7 @@ import { useTheme } from '@material-ui/core/styles';
 export default function LoginDialog(props) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
-    const googleSignInButtonImage = process.env.PUBLIC_URL + '/google_signin_button.png'
+    const googleSignInButtonImage = process.env.PUBLIC_URL + '/img/google_signin_button.png'
     const DialogTitleBar = () => {
 
         const titleText = "Sign in to TaxAutonomy"

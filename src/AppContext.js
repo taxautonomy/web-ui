@@ -10,6 +10,20 @@ function guid() {
     });
   }
   
+  export const InitListReducer = (state, action) => {
+    const list = action.list.filter(tx => tx.type === action.type)
+    let total = 0;
+    list.forEach(tx => total+=tx.amt)
+
+    return {
+      ...state,
+      [action.type]: {
+        ...state[action.type],
+        list: list,
+        total: total
+      }
+    }
+  }
   export const EntityReducer = (state, action) => {
   
     const { type, entityTypeKey, entity } = action;
@@ -35,7 +49,7 @@ function guid() {
         matchIndex = newList.findIndex(e => e.id === entity.id);
         newList.splice(matchIndex, 1);
         break;
-  
+          
       default:
         return state;
     }

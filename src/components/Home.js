@@ -6,6 +6,8 @@ import { Container } from '@material-ui/core';
 import { TaxCalculationContext } from '../AppContext'
 import LoginDialog from './LoginDialog';
 
+const splashPageDelay = 5;
+
 const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
@@ -33,7 +35,7 @@ export default function Home() {
           setTimeout(function () {
             setBackdropOpen(false)
             setShowLoginDialog(true)
-        }, 1000);
+        }, splashPageDelay * 1000);
 
         }
     },[isSignedIn])
