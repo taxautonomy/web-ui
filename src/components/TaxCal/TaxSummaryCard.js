@@ -47,7 +47,7 @@ export default function TaxSummaryCard(props) {
   const classes = useStyles();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('xs'));
-  const { currentScheme, entityCollection,setLoading} = useContext(TaxCalculationContext);
+  const { currentScheme, entityCollection,setLoading, user} = useContext(TaxCalculationContext);
   const [taxSummary, setTaxSummary] = useState(null);
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export default function TaxSummaryCard(props) {
 
     if (currentScheme) {
       setLoading(true);
-      axios.get(Config.getApiHost() + `/api/schemes/${currentScheme.id}/taxes?in=${i_total}&qp=${qp_total}&tp=${tp_total}`).then(
+      axios.get(Config.getApiHost() + `/api/users/${user.id}/ws/${currentScheme.id}/taxes`).then(
         response => {
           setTaxSummary(response.data);
           setLoading(false);

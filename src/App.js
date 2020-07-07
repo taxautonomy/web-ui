@@ -103,7 +103,6 @@ export default function App() {
     if (currentScheme && isSignedIn) {
       setLoading(true);
       axios.get(Config.getApiHost() + '/api/ws/' + currentScheme.id + '/tx').then(res => {
-        console.log(res.data)
         initList({ types: ['in', 'qp', 'tp'], list: res.data })
         setLoading(false);
       })
