@@ -41,12 +41,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 export default function EntitySummaryCard(props) {
-  const { entityCollection} = useContext(TaxCalculationContext);
-
+  const { entityCollection } = useContext(TaxCalculationContext);
   const { entityType } = props;
   const { name, title, list, total } = entityCollection[entityType];
   const classes = useStyles();
-
   const getLatestRecord = list => {
     if (list.length === 0)
       return null;
@@ -66,8 +64,7 @@ export default function EntitySummaryCard(props) {
         </IconButton>}
         title={<Typography variant="h6">{title}</Typography>} />
       <CardContent style={{ padding: '0' }}>
-
-          < Table >
+        < Table>
           <TableBody>
             <TableRow>
               <TableCell>
@@ -86,9 +83,9 @@ export default function EntitySummaryCard(props) {
           </TableBody>
         </Table>
       </CardContent>
-    <CardActions style={{ justifyContent: 'space-between' }}>
-      <Button size="small" color="primary" onClick={props.onClickMoreInfo}>more info</Button>
-      <Button size="small" color="primary" onClick={props.onClickAdd}>add {name}</Button>
-    </CardActions>
+      <CardActions style={{ justifyContent: 'space-between' }}>
+        <Button size="small" color="primary" onClick={props.onClickMoreInfo}>more info</Button>
+        <Button size="small" color="primary" onClick={props.onClickAdd}>add {name}</Button>
+      </CardActions>
     </Card >);
 }

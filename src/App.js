@@ -39,12 +39,13 @@ const entityTypes = {};
 entityTypeArray.forEach(i => entityTypes[i.key] = i);
 
 export default function App() {
-  const [currentScheme, setCurrentScheme] = useState(null);
+  const [activeWorkspace, setActiveWorkspace] = useState(null);
   const [entityCollection, initList] = useReducer(InitListReducer, entityTypes);
+  const [tax, setTax] = useState(null)
   const [loading, setLoading] = useReducer(DataLoadReducer, {loadingCount:0, loading:true});
   const [showLeftNav, setShowLeftNav] = useState(false);
-  const [schemes, setSchemes] = useState([]);
-  const googleLogin = useGoogleLogin({ clientId: Config.googleClientId })
+  const [workspaces, setWorkspaces] = useState([]);
+  const googleLogin = useGoogleLogin({ clientId: Config.googleClientId, uxMode:"redirect", redirectUri:window.location.href })
   const { isSignedIn, googleUser } = googleLogin;
   const [user, setUser] = useState(null);
   // const [loading, setLoading] = useState(true);
@@ -53,34 +54,34 @@ export default function App() {
 
   const refreshList = (entityTypeKey) => {
 
-    axios.get(Config.getApiHost() + '/api/ws/' + currentScheme.id + '/tx?type=' + entityTypeKey).then(getResponse => {
+    axios.get(Config.getApiHost() + '/api/ws/' + activeWorkspace.id + '/tx?type=' + entityTypeKey).then(getResponse => {
       initList({ types: [entityTypeKey], list: getResponse.data })
     })
   }
 
-  const initSchemes = (schemes) => {
-    schemes.forEach(scheme => {
+  const initSchemes = (workspaces) => {
+    workspaces.forEach(scheme => {
       scheme.start_date = new Date(scheme.start_date);
       scheme.end_date = new Date(scheme.end_date);
     })
 
-    setSchemes(schemes);
+    setWorkspaces(workspaces);
   }
 
   const addEntity = (newEntity) => {
-    axios.post(Config.getApiHost() + '/api/ws/' + currentScheme.id + '/tx', newEntity).then(res => {
+    axios.post(Config.getApiHost() + '/api/ws/' + activeWorkspace.id + '/tx', newEntity).then(res => {
       refreshList(newEntity.type)
     })
   }
 
   const updateEntity = (newEntity) => {
-    axios.post(Config.getApiHost() + '/api/ws/' + currentScheme.id + '/tx/' + newEntity.id, newEntity).then(res => {
+    axios.post(Config.getApiHost() + '/api/ws/' + activeWorkspace.id + '/tx/' + newEntity.id, newEntity).then(res => {
       refreshList(newEntity.type)
     })
   }
 
   const deleteEntity = (newEntity) => {
-    axios.delete(Config.getApiHost() + '/api/ws/' + currentScheme.id + '/tx/' + newEntity.id).then(res => {
+    axios.delete(Config.getApiHost() + '/api/ws/' + activeWorkspace.id + '/tx/' + newEntity.id).then(res => {
       refreshList(newEntity.type)
     })
   }
@@ -96,29 +97,31 @@ export default function App() {
   }, [isSignedIn])
 
   useEffect(() => {
-    setCurrentScheme(schemes.find(scheme => scheme.is_default))
-  }, [schemes])
+    setActiveWorkspace(workspaces.find(scheme => scheme.is_default))
+  }, [workspaces])
 
   useEffect(() => {
-    if (currentScheme && isSignedIn) {
+    if (activeWorkspace && isSignedIn) {
       setLoading(true);
-      axios.get(Config.getApiHost() + '/api/ws/' + currentScheme.id + '/tx').then(res => {
-        initList({ types: ['in', 'qp', 'tp'], list: res.data })
+      axios.get(Config.getApiHost() + '/api/users/'+ user.id + '/ws/' + activeWorkspace.id ).then(res => {
+        initList({ types: ['in', 'qp', 'tp'], list: res.data.transactions })
+        setTax(res.data.tax)
         setLoading(false);
       })
     }
-  }, [currentScheme])
+  }, [activeWorkspace])
 
   return (
     <Fragment>
       <CssBaseline />
       <TaxCalculationContext.Provider value={{
-        currentScheme, setCurrentScheme,
+        activeWorkspace, setActiveWorkspace,
         entityCollection, addEntity, updateEntity, deleteEntity,
         googleLogin,
-        schemes, setSchemes,
+        workspaces, setWorkspaces,
         user,
-        loading, setLoading
+        loading, setLoading,
+        tax
       }} >
         <ThemeProvider theme={theme}>
         <Backdrop className={classes.backdrop} open={loading.loading}>

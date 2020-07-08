@@ -38,12 +38,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EntityListDialog(props) {
-  const {entityCollection, currentScheme} = useContext(TaxCalculationContext);
+  const {entityCollection, activeWorkspace} = useContext(TaxCalculationContext);
   const {title} = entityCollection[props.entityType];
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
-  const dialogTitle = currentScheme? `${title} [${currentScheme.name}]` : title; 
+  const dialogTitle = activeWorkspace? `${title} [${activeWorkspace.name}]` : title; 
   return (
     <Dialog fullWidth={true}
       classes={fullScreen ? {} : { paper: classes.entityListDialogPaper }}

@@ -30,21 +30,21 @@ class TaxForm extends Component {
     this.setState(prevState => ({checkedSchemes: prevState.checkedSchemes.set(item, isChecked)}));
   }
   onSubmit = (e) => {
-    var schemes = [];
+    var workspaces = [];
     this.state.checkedSchemes.forEach((value, key )=> {
       if(value){
-        schemes.push(key);
+        workspaces.push(key);
       }
     })
 
-    this.props.onSubmit(schemes, this.state.salary);
+    this.props.onSubmit(workspaces, this.state.salary);
   }
   raiseInputChanged() {
     this.props.onSubmit(this.state.scheme1, this.state.scheme2, this.state.salary);
   }
   render() {
-    const { schemes } = this.props;
-    if (!schemes.length) {
+    const { workspaces } = this.props;
+    if (!workspaces.length) {
       return null;
     }
 
@@ -65,7 +65,7 @@ class TaxForm extends Component {
             <div className="tableRow">
               <div className="tableCell leftAlign">
 
-                <TaxSchemeList schemes={schemes} onChange={this.onSchemeSelected}/>
+                <TaxSchemeList workspaces={workspaces} onChange={this.onSchemeSelected}/>
               </div>
               <div className="tableCell rightAlign"><button onClick={this.onSubmit}>Compare Tax</button></div>
             </div>

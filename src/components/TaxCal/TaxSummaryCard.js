@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {
   Typography,
@@ -16,8 +16,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { TaxCalculationContext } from '../../AppContext';
-import Config from '../../Config';
-import axios from 'axios';
+
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -47,24 +46,7 @@ export default function TaxSummaryCard(props) {
   const classes = useStyles();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('xs'));
-  const { currentScheme, entityCollection,setLoading, user} = useContext(TaxCalculationContext);
-  const [taxSummary, setTaxSummary] = useState(null);
-
-  useEffect(() => {
-    const i_total = entityCollection['in'].total;
-    const qp_total = entityCollection['qp'].total;
-    const tp_total = entityCollection['tp'].total;
-
-    if (currentScheme) {
-      setLoading(true);
-      axios.get(Config.getApiHost() + `/api/users/${user.id}/ws/${currentScheme.id}/taxes`).then(
-        response => {
-          setTaxSummary(response.data);
-          setLoading(false);
-        }
-      )
-    }
-  }, [entityCollection])
+  const { activeWorkspace, tax} = useContext(TaxCalculationContext);
 
   const AdditionalInfo = () => {
     return isSmallScreen ? (<TableCell />) : (
@@ -73,13 +55,13 @@ export default function TaxSummaryCard(props) {
           <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
             Qualifying Payments (LKR)
         </Typography>
-          <Typography variant="body2" component="p" style={{ fontWeight: 'bold' }}>{taxSummary ? taxSummary.qp_actual.toFixed(2) : '...'}</Typography>
+          <Typography variant="body2" component="p" style={{ fontWeight: 'bold' }}>{tax ? tax.qp_actual.toFixed(2) : '...'}</Typography>
         </TableCell>
         <TableCell>
           <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
             Taxable Income (LKR)
           </Typography>
-          <Typography variant="body2" component="p" style={{ fontWeight: 'bold' }}>{taxSummary ? taxSummary.taxable_income.toFixed(2) : '...'}</Typography>
+          <Typography variant="body2" component="p" style={{ fontWeight: 'bold' }}>{tax ? tax.taxable_income.toFixed(2) : '...'}</Typography>
         </TableCell>
       </React.Fragment>)
   }
@@ -93,15 +75,15 @@ export default function TaxSummaryCard(props) {
         action={<IconButton aria-label="settings">
           <MoreVertIcon />
         </IconButton>}
-        title={<Typography variant="h6">Tax Summary for {currentScheme ? currentScheme.name : ''}</Typography>} />
+        title={<Typography variant="h6">Tax Summary for {activeWorkspace ? activeWorkspace.name : ''}</Typography>} />
       <CardContent style={{ padding: '0' }}>
         <Table>
           <TableBody>
             <TableRow><TableCell>
               <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
-                {taxSummary && taxSummary.tax_total < 0 ? 'Refund to be claimed ' : 'Balance to be paid '}(LKR)
+                {tax && tax.tax_total < 0 ? 'Refund to be claimed ' : 'Balance to be paid '}(LKR)
                 </Typography>
-              <Typography variant="body2" component="p" style={{ fontWeight: 'bold' }}>{taxSummary ? taxSummary.tax_total.toFixed(2) : '...'}</Typography>
+              <Typography variant="body2" component="p" style={{ fontWeight: 'bold' }}>{tax ? tax.tax_total.toFixed(2) : '...'}</Typography>
             </TableCell>
               <AdditionalInfo />
             </TableRow>

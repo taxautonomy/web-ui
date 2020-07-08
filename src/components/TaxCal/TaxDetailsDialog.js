@@ -106,10 +106,11 @@ export default function TaxDetailsDialog(props) {
           <Grid item>
             <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
               Taxable Income (LKR)
-  </Typography>
+            </Typography>
             <Typography variant="body2" component="p" style={{ fontWeight: 'bold' }}>{taxSummary ? taxSummary.taxable_income.toFixed(2) : '...'}</Typography>
           </Grid>
-        </Grid></Container>
+        </Grid>
+      </Container>
     </Dialog>
   );
 }

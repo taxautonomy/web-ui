@@ -70,9 +70,9 @@ const useStyles = makeStyles((theme) => ({
 export default function LeftNav(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const { currentScheme, setCurrentScheme, schemes } = useContext(TaxCalculationContext);
-  const setCurrentSchemeById = schemeId => setCurrentScheme(schemes.find(scheme => scheme.id === schemeId))
-  const handleCurrentSchemeChange = schemeId => { setCurrentSchemeById(schemeId); props.onClickHide(); }
+  const { activeWorkspace, setActiveWorkspace, workspaces } = useContext(TaxCalculationContext);
+  const setActiveWorkspaceById = schemeId => setActiveWorkspace(workspaces.find(scheme => scheme.id === schemeId))
+  const handleCurrentSchemeChange = schemeId => { setActiveWorkspaceById(schemeId); props.onClickHide(); }
   return (
     <Drawer variant="persistent" anchor="left" open={props.open} style={{}}>
       <div className={classes.drawerHeader}>
@@ -86,9 +86,9 @@ export default function LeftNav(props) {
         <ListItemText primary="Tax Scheme:" />
       </ListItem>
       <List>
-        {schemes.map((scheme) => (
+        {workspaces.map((scheme) => (
           <ListItem button
-            selected={currentScheme && scheme.id === currentScheme.id}
+            selected={activeWorkspace && scheme.id === activeWorkspace.id}
             key={scheme.id} onClick={() => { handleCurrentSchemeChange(scheme.id) }}>
             <ListItemIcon><InboxIcon /></ListItemIcon>
             <ListItemText primary={scheme.name} />

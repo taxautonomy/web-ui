@@ -12,14 +12,14 @@ import { TaxCalculationContext } from '../../AppContext';
 export default function EntityEditDialog(props) {
 
   const [newEntity, setNewEntity] = useState(props.entity);
-  const { entityCollection, currentScheme } = useContext(TaxCalculationContext);
+  const { entityCollection, activeWorkspace } = useContext(TaxCalculationContext);
   const { name } = entityCollection[props.entityType];
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
   const [dateHelperText, setDateHelperText] = useState('')
   const handleSubmit = (keepOpen) => {
 
-    const { start_date, end_date } = currentScheme;
+    const { start_date, end_date } = activeWorkspace;
 
     var entity = {
       date: new Date(newEntity.date),
