@@ -8,7 +8,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { TableFooter, IconButton, ListItemText, List, ListItem, Divider } from '@material-ui/core';
+import { TableFooter, IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TxList(props) {
+export default function Table(props) {
   const { txCache, addTx, updateTx, deleteTx } = useContext(AppContext);
 
   const classes = useStyles();
@@ -96,17 +96,15 @@ export default function TxList(props) {
           </TableHead>
           <TableBody>
             {list.map((tx) => (
-              <Fragment>
-                <TableRow key={tx.id}>
-                  <TableCell component="th" scope="row">{tx.date.toISOString().slice(0, 10)}</TableCell>
-                  <TableCell >{tx.desc}</TableCell>
-                  <TableCell align="right">{tx.amt.toFixed(2)}</TableCell>
-                  <TableCell size="small">
-                    <IconButton size="small" onClick={() => openEditTxDialog(tx)}><EditIcon /></IconButton>
-                    <IconButton size="small" onClick={() => openDeleteTxDialog(tx)}><DeleteIcon /></IconButton>
-                  </TableCell>
-                </TableRow>
-              </Fragment>
+              <TableRow key={tx.id}>
+                <TableCell component="th" scope="row">{tx.date.toISOString().slice(0, 10)}</TableCell>
+                <TableCell >{tx.desc}</TableCell>
+                <TableCell align="right">{tx.amt.toFixed(2)}</TableCell>
+                <TableCell size="small">
+                  <IconButton size="small" onClick={() => openEditTxDialog(tx)}><EditIcon /></IconButton>
+                  <IconButton size="small" onClick={() => openDeleteTxDialog(tx)}><DeleteIcon /></IconButton>
+                </TableCell>
+              </TableRow>
             ))}
           </TableBody>
           <TableFooter>
@@ -118,17 +116,7 @@ export default function TxList(props) {
           </TableFooter>
         </Table>
       </TableContainer>
-      {/* <List className={classes.root}>
-        {list.map(tx=> (
-          <Fragment>
-          <ListItem alignItems="flex-start">
-            <ListItemText primary={tx.date.toISOString().slice(0,10)} secondary={tx.desc}/>
-            <ListItemText alignItems="right" primary={tx.amt.toFixed(2)} />
-          </ListItem>
-          <Divider variant="fullwidth" component="li"/>
-          </Fragment>
-        ))}
-      </List> */}
+
       <Fab variant="extended" color="primary" aria-label="add" className={classes.fab}
         onClick={() => openAddTxDialog()}>
         <AddIcon />&nbsp;&nbsp;Add {name}
