@@ -3,7 +3,7 @@ import { AppBar, Typography, Toolbar, IconButton, MenuItem, Avatar, Menu } from 
 import MenuIcon from '@material-ui/icons/Menu'
 import { makeStyles } from '@material-ui/core/styles';
 import Config from '../Config'
-import { TaxCalculationContext } from '../AppContext'
+import { AppContext } from '../ContextHelper'
 import LogoutDialog from './LogoutDialog';
 
 const useStyles = makeStyles((theme) => ({
@@ -32,7 +32,7 @@ export default function Header(props) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
-  const { signOut, googleUser } = useContext(TaxCalculationContext).googleLogin;
+  const { signOut, googleUser } = useContext(AppContext).googleLogin;
 
   const handleClose = () => {
     setAnchorEl(null);

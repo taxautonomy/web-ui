@@ -16,15 +16,15 @@ import {
 } from '@material-ui/core';
 
 
-export default function EntityDeleteDialog(props) {
-  const { entity, entityType } = props;
+export default function TxDeleteDialog(props) {
+  const { tx, txType } = props;
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
 
   const DialogTitleBar = () => {
 
-    const titleText = `Delete ${props.entityType.name} Confirmation`;
+    const titleText = `Delete ${props.txType.name} Confirmation`;
 
     const titleFullScreen = (
       <AppBar position="static" >
@@ -44,7 +44,7 @@ export default function EntityDeleteDialog(props) {
   };
 
   const handleClickYes = () => {
-    props.onSubmit(entity);
+    props.onSubmit(tx);
   }
 
   return (
@@ -53,12 +53,12 @@ export default function EntityDeleteDialog(props) {
       open={props.open}>
       <DialogTitleBar />
       <DialogContent>
-        <Typography variant="subtitle1">Are you sure to delete the following {entityType.name} ?</Typography>
+        <Typography variant="subtitle1">Are you sure to delete the following {txType.name} ?</Typography>
         <Card>
           <CardContent>
-            <Typography>Date: {entity.date}</Typography>
-            <Typography>Description: {entity.desc}</Typography>
-            <Typography>Amount: {entity.amt.toFixed(2)}</Typography>
+            <Typography>Date: {tx.date}</Typography>
+            <Typography>Description: {tx.desc}</Typography>
+            <Typography>Amount: {tx.amt.toFixed(2)}</Typography>
           </CardContent>
         </Card>
       </DialogContent>

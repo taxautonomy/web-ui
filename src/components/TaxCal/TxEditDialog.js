@@ -7,13 +7,13 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField'
 import { useMediaQuery, AppBar, Typography, Toolbar } from '@material-ui/core'
 import { useTheme } from '@material-ui/core/styles';
-import { TaxCalculationContext } from '../../AppContext';
+import { AppContext } from '../../ContextHelper';
 
-export default function EntityEditDialog(props) {
+export default function TxEditDialog(props) {
 
-  const [newEntity, setNewEntity] = useState(props.entity);
-  const { entityCollection, activeWorkspace } = useContext(TaxCalculationContext);
-  const { name } = entityCollection[props.entityType];
+  const [newTx, setNewTx] = useState(props.tx);
+  const { txCache, activeWorkspace } = useContext(AppContext);
+  const { name } = txCache[props.txType];
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
   const [dateHelperText, setDateHelperText] = useState('')
@@ -21,22 +21,22 @@ export default function EntityEditDialog(props) {
 
     const { start_date, end_date } = activeWorkspace;
 
-    var entity = {
-      date: new Date(newEntity.date),
-      desc: newEntity.desc,
-      amt: parseFloat(newEntity.amt, 10),
-      type: props.entityType
+    var tx = {
+      date: new Date(newTx.date),
+      desc: newTx.desc,
+      amt: parseFloat(newTx.amt, 10),
+      type: props.txType
     };
 
-    let isValidDate = (entity.date > start_date && entity.date < end_date);
+    let isValidDate = (tx.date > start_date && tx.date < end_date);
     setDateHelperText(isValidDate ? '' : 'Date should be within the scheme start date and end date');
 
-    if (newEntity.id)
-      entity.id = newEntity.id;
+    if (newTx.id)
+      tx.id = newTx.id;
 
     if (isValidDate) {
-      props.onSubmit(entity, keepOpen);
-      setNewEntity(props.entity);
+      props.onSubmit(tx, keepOpen);
+      setNewTx(props.tx);
     }
   }
 
@@ -45,20 +45,20 @@ export default function EntityEditDialog(props) {
     const name = target.name;
     const value = name === 'schedule' ? !target.checked : target.value;
 
-    setNewEntity({
-      ...newEntity,
+    setNewTx({
+      ...newTx,
       [name]: value
     });
 
   }
 
   useEffect(() => {
-    setNewEntity(props.entity);
+    setNewTx(props.tx);
   }, [props.open])
 
   const DialogTitleBar = () => {
 
-    const titleText = (newEntity.id ? 'Edit ' : 'New ') + name;
+    const titleText = (newTx.id ? 'Edit ' : 'New ') + name;
 
     const titleFullScreen = (
       <AppBar position="static" >
@@ -85,7 +85,7 @@ export default function EntityEditDialog(props) {
             label="Date"
             type="date"
             name="date"
-            value={newEntity.date}
+            value={newTx.date}
             onChange={handleInputChange}
             error={!(dateHelperText === '')}
             helperText={dateHelperText}
@@ -98,7 +98,7 @@ export default function EntityEditDialog(props) {
             label="Description"
             type="text"
             name="desc"
-            value={newEntity.desc}
+            value={newTx.desc}
             onChange={handleInputChange}
 
           />
@@ -109,13 +109,13 @@ export default function EntityEditDialog(props) {
             label="Amount"
             type="text"
             name="amt"
-            value={newEntity.amt > 0 ? newEntity.amt : ''}
+            value={newTx.amt > 0 ? newTx.amt : ''}
             onChange={handleInputChange}
           />          </div>
       </DialogContent>
       <DialogActions>
         <Button id="save" onClick={() => handleSubmit(false)} variant="outlined" color="primary">Save</Button>
-        {newEntity.id ? '' : <Button onClick={() => handleSubmit(true)} variant="outlined" color="primary">Save & Add New</Button>}
+        {newTx.id ? '' : <Button onClick={() => handleSubmit(true)} variant="outlined" color="primary">Save & Add New</Button>}
         <Button onClick={() => props.onCancel()} variant="outlined" color="primary">Cancel</Button>
       </DialogActions>
     </Dialog>

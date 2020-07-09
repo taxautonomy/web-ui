@@ -24,14 +24,14 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: '8px'
   },
 
-  entityListDialogAppBar: {
+  txListDialogAppBar: {
     position: 'relative',
   },
-  entityListDialogTitle: {
+  txListDialogTitle: {
     marginLeft: theme.spacing(2),
     flex: 1,
   },
-  entityListDialogPaper: {
+  txListDialogPaper: {
     minHeight: '90vh',
     maxHeight: '90vh',
   },
@@ -61,7 +61,7 @@ export default function TaxDetailsDialog(props) {
   const { taxSummary } = props;
   return (
     <Dialog fullWidth={true}
-      classes={fullScreen ? {} : { paper: classes.entityListDialogPaper }}
+      classes={fullScreen ? {} : { paper: classes.txListDialogPaper }}
       maxWidth="lg"
       fullScreen={fullScreen}
       open={props.open}

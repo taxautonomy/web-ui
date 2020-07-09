@@ -7,7 +7,7 @@ export default function TaxSummaryGridItem(props) {
   const [openTaxDetailsDialog, setOpenTaxDetailsDialog] = useState(false);
   const {taxSummary, ...other} = props;
 
-  const showTaxDetailsDialog = (showNewEntityDialog) => {
+  const showTaxDetailsDialog = (showNewTxDialog) => {
     setOpenTaxDetailsDialog(true);
   };
 

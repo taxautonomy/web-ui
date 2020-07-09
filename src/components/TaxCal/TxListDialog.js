@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import { useTheme } from '@material-ui/core/styles';
-import EntityList from './EntityList';
+import TxList from './TxList';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -13,7 +13,7 @@ import {
   Transition,
   useMediaQuery
 } from '@material-ui/core';
-import { TaxCalculationContext } from '../../AppContext';
+import { AppContext } from '../../ContextHelper';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,29 +24,29 @@ const useStyles = makeStyles((theme) => ({
     paddingRight:'8px'
   },
 
-  entityListDialogAppBar: {
+  txListDialogAppBar: {
     position: 'relative',
   },
-  entityListDialogTitle: {
+  txListDialogTitle: {
     marginLeft: theme.spacing(2),
     flex: 1,
   },
-  entityListDialogPaper: {
+  txListDialogPaper: {
     minHeight: '90vh',
     maxHeight: '90vh',
   },
 }));
 
-export default function EntityListDialog(props) {
-  const {entityCollection, activeWorkspace} = useContext(TaxCalculationContext);
-  const {title} = entityCollection[props.entityType];
+export default function TxListDialog(props) {
+  const {txCache, activeWorkspace} = useContext(AppContext);
+  const {title} = txCache[props.txType];
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
   const dialogTitle = activeWorkspace? `${title} [${activeWorkspace.name}]` : title; 
   return (
     <Dialog fullWidth={true}
-      classes={fullScreen ? {} : { paper: classes.entityListDialogPaper }}
+      classes={fullScreen ? {} : { paper: classes.txListDialogPaper }}
       maxWidth="lg"
       fullScreen={fullScreen}
       open={props.open}
@@ -62,7 +62,7 @@ export default function EntityListDialog(props) {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <EntityList entityType={props.entityType} showNewEntityDialog={props.showNewEntityDialog} />
+      <TxList txType={props.txType} showNewTxDialog={props.showNewTxDialog} />
     </Dialog>
   );
 }

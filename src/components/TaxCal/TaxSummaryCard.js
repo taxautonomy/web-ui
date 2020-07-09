@@ -15,7 +15,7 @@ import {
   TableBody, useMediaQuery
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { TaxCalculationContext } from '../../AppContext';
+import { AppContext } from '../../ContextHelper';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +46,7 @@ export default function TaxSummaryCard(props) {
   const classes = useStyles();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('xs'));
-  const { activeWorkspace, tax} = useContext(TaxCalculationContext);
+  const { activeWorkspace, tax} = useContext(AppContext);
 
   const AdditionalInfo = () => {
     return isSmallScreen ? (<TableCell />) : (

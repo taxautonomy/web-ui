@@ -15,7 +15,7 @@ import {
   TableBody
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { TaxCalculationContext } from '../../AppContext'
+import { AppContext } from '../../ContextHelper'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -40,10 +40,10 @@ const useStyles = makeStyles((theme) => ({
     color: '#fff',
   }
 }));
-export default function EntitySummaryCard(props) {
-  const { entityCollection } = useContext(TaxCalculationContext);
-  const { entityType } = props;
-  const { name, title, list, total } = entityCollection[entityType];
+export default function TxSummaryCard(props) {
+  const { txCache } = useContext(AppContext);
+  const { txType } = props;
+  const { name, title, list, total } = txCache[txType];
   const classes = useStyles();
   const getLatestRecord = list => {
     if (list.length === 0)

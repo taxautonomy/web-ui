@@ -7,7 +7,7 @@ import Divider from '@material-ui/core/Divider';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import Config from '../Config';
 import CardMembershipIcon from '@material-ui/icons/CardMembership';
-import { TaxCalculationContext } from '../AppContext'
+import { AppContext } from '../ContextHelper'
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
 export default function LeftNav(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const { activeWorkspace, setActiveWorkspace, workspaces } = useContext(TaxCalculationContext);
+  const { activeWorkspace, setActiveWorkspace, workspaces } = useContext(AppContext);
   const setActiveWorkspaceById = schemeId => setActiveWorkspace(workspaces.find(scheme => scheme.id === schemeId))
   const handleCurrentSchemeChange = schemeId => { setActiveWorkspaceById(schemeId); props.onClickHide(); }
   return (

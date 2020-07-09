@@ -1,6 +1,6 @@
 import React , {useContext} from 'react';
 import { useTheme } from '@material-ui/core/styles';
-import {TaxCalculationContext} from '../AppContext'
+import {AppContext} from '../ContextHelper'
 
 import {
   Typography,
@@ -17,7 +17,7 @@ import {
 
 
 export default function LogoutDialog(props) {
-  const { googleUser, isSignedIn } = useContext(TaxCalculationContext).googleLogin;
+  const { googleUser, isSignedIn } = useContext(AppContext).googleLogin;
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
