@@ -17,7 +17,7 @@ import {
 
 
 export default function LogoutDialog(props) {
-  const { googleUser, isSignedIn } = useContext(AppContext).googleLogin;
+  const { user } = useContext(AppContext);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
@@ -55,12 +55,12 @@ export default function LogoutDialog(props) {
       <DialogContent>
         <Typography variant="subtitle1">Are you sure to sign out of the following account ?</Typography>
         {/* {isSignedIn && <Typography display="inline"><Avatar display="inline" alt={googleUser.profileObj.name} src={googleUser.profileObj.imageUrl}></Avatar>{googleUser.profileObj.name}</Typography>} */}
-        {isSignedIn && 
+        {user && 
         <Table>
           <TableBody>
             <TableRow>
-              <TableCell><Avatar display="inline" alt={googleUser.profileObj.email} src={googleUser.profileObj.imageUrl}/></TableCell>
-              <TableCell><Typography>{googleUser.profileObj.name}&nbsp;({googleUser.profileObj.email})</Typography></TableCell>
+              <TableCell><Avatar display="inline" alt={user.email} src={user.imageUrl}/></TableCell>
+              <TableCell><Typography>{user.name}&nbsp;({user.email})</Typography></TableCell>
             </TableRow>
           </TableBody>
           </Table>

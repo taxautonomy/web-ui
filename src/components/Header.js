@@ -32,7 +32,7 @@ export default function Header(props) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
-  const { signOut, googleUser } = useContext(AppContext).googleLogin;
+  const { user } = useContext(AppContext);
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -54,11 +54,11 @@ export default function Header(props) {
         </IconButton>
         <Typography variant="h5" style={{ flexGrow: 1 }} >{Config.appTitle}</Typography>
         <IconButton onClick={(event) => setAnchorEl(event.currentTarget)}>
-          <Avatar className={classes.avatar} alt={googleUser.profileObj.name} src={googleUser.profileObj.imageUrl}></Avatar>
+          <Avatar className={classes.avatar} alt={user.name} src={user.imageUrl}></Avatar>
         </IconButton>
         <AccountMenu />
         <LogoutDialog open={showLogoutDialog}
-          onSubmit={() => { signOut(); setShowLogoutDialog(false) }}
+          onSubmit={() => { props.signOut(); setShowLogoutDialog(false) }}
           onCancel={() => setShowLogoutDialog(false)} />
       </Toolbar>
     </AppBar>

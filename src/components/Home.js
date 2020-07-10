@@ -15,15 +15,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Home() {
-  const { signIn, googleUser, isSignedIn } = useContext(AppContext).googleLogin;
+export default function Home(props) {
+  const { user } = useContext(AppContext);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const classes = useStyles();
   const [backdropOpen, setBackdropOpen] = useState(true);
-
+  const {isSignedIn, signIn } = props;
   useEffect(() => {
     if (isSignedIn) {
-      console.log(googleUser)
       setBackdropOpen(false)
     }
     else {

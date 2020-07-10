@@ -10,10 +10,10 @@ import { AppContext, TxCacheReducer, DataLoadReducer } from './ContextHelper'
 import LeftNav from './components/LeftNav';
 import Config from './Config'
 import axios from 'axios'
-import { useGoogleLogin } from 'react-use-googlelogin'
+// import { useGoogleLogin } from 'react-use-googlelogin'
 import Home from './components/Home';
 import { makeStyles } from '@material-ui/core/styles';
-
+import {useGoogleLogin, useGoogleLogout} from 'react-google-login';
 const theme = createMuiTheme({
   palette: {
     //primary:blueGrey,
@@ -45,8 +45,15 @@ export default function App() {
   const [loading, setLoading] = useReducer(DataLoadReducer, { loadingCount: 0, loading: true });
   const [showLeftNav, setShowLeftNav] = useState(false);
   const [workspaces, setWorkspaces] = useState([]);
-  const googleLogin = useGoogleLogin({ clientId: Config.googleClientId, uxMode: "redirect", redirectUri: window.location.href })
-  const { isSignedIn, googleUser } = googleLogin;
+  // const googleLogin = useGoogleLogin({ clientId: Config.googleClientId, uxMode: "redirect", redirectUri: window.location.href })
+  // const { isSignedIn, googleUser} = googleLogin;
+  const {signIn} = useGoogleLogin({
+    clientId:Config.googleClientId, 
+    isSignedIn:true, 
+    // responseType:'code',
+    onSuccess:response => initSession(response.profileObj)});
+  const {signOut } = useGoogleLogout({clientId:Config.googleClientId})
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const [user, setUser] = useState(null);
   const apiHost = Config.getApiHost();
   const classes = useStyles();
@@ -58,16 +65,32 @@ export default function App() {
   //   })
   // }
 
+  const initSession = (profileObj) =>{
+    setIsSignedIn(true);
+    axios.get(apiHost + '/api/users?email=' + profileObj.email).then(res => {
+      const taUser = res.data;
+      taUser.imageUrl = profileObj.imageUrl;
+      setUser(taUser)
+      
+      taUser.workspaces.forEach(scheme => {
+        scheme.start_date = new Date(scheme.start_date);
+        scheme.end_date = new Date(scheme.end_date);
+      })
+
+      setWorkspaces(taUser.workspaces);
+    })
+  }
+
+  // const signIn = () =>{
+  //   googleLogin.signIn();
+  // }
+
+  // const signOut = () =>{
+  //   googleLogin.signOut();
+  // }
+
   const buildTxFromJson = json => {
     return { ...json, date: new Date(json.date) }
-  }
-  const initSchemes = (workspaces) => {
-    workspaces.forEach(scheme => {
-      scheme.start_date = new Date(scheme.start_date);
-      scheme.end_date = new Date(scheme.end_date);
-    })
-
-    setWorkspaces(workspaces);
   }
 
   const apiRequestOptions = () => ({
@@ -94,15 +117,21 @@ export default function App() {
     })
   }
 
-  useEffect(() => {
-    if (isSignedIn) {
-      axios.get(apiHost + '/api/users?email=' + googleUser.profileObj.email).then(res => {
-        setUser(res.data)
-        initSchemes(res.data.workspaces)
-      })
-    }
 
-  }, [isSignedIn])
+
+  const cleanUpSession = () =>{
+    setUser(null);
+  }
+
+  // useEffect(() => {
+  //   if (isSignedIn) {
+  //     initSession();
+  //   }
+  //   else{
+  //     cleanUpSession();
+  //   }
+
+  // }, [isSignedIn])
 
   useEffect(() => {
     setActiveWorkspace(workspaces.find(scheme => scheme.is_default))
@@ -119,13 +148,15 @@ export default function App() {
     }
   }, [activeWorkspace])
 
+  // if(isSignedIn) {
+  //   initSession();
+  // }
   return (
     <Fragment>
       <CssBaseline />
       <AppContext.Provider value={{
         activeWorkspace, setActiveWorkspace,
         txCache, addTx, updateTx, deleteTx,
-        googleLogin,
         workspaces, setWorkspaces,
         user,
         loading, setLoading,
@@ -135,9 +166,9 @@ export default function App() {
           <Backdrop className={classes.backdrop} open={loading.loading}>
             <CircularProgress color="inherit" />
           </Backdrop>
-          {googleLogin.isSignedIn ? (
+          {user ? (
             <Fragment>
-              <Header onClickMenu={() => setShowLeftNav(true)} />
+              <Header onClickMenu={() => setShowLeftNav(true)} signOut={signOut}/>
               <LeftNav open={showLeftNav} onClickHide={() => setShowLeftNav(false)} />
               <Container maxWidth="lg">
                 <Router>
@@ -147,7 +178,7 @@ export default function App() {
               </Container>
             </Fragment>
           ) : (
-              <Home />
+              <Home isSignedIn={isSignedIn} signIn={signIn} />
             )}
 
         </ThemeProvider>
