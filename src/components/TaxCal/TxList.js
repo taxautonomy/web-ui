@@ -96,7 +96,7 @@ export default function TxList(props) {
           </TableHead>
           <TableBody>
             {list.map((tx) => (
-              <Fragment>
+              <Fragment key={tx.id}>
                 <TableRow key={tx.id}>
                   <TableCell component="th" scope="row">{tx.date.toISOString().slice(0, 10)}</TableCell>
                   <TableCell >{tx.desc}</TableCell>

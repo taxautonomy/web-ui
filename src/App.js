@@ -14,6 +14,7 @@ import axios from 'axios'
 import Home from './components/Home';
 import { makeStyles } from '@material-ui/core/styles';
 import {useGoogleLogin, useGoogleLogout} from 'react-google-login';
+
 const theme = createMuiTheme({
   palette: {
     //primary:blueGrey,
@@ -49,9 +50,11 @@ export default function App() {
   // const { isSignedIn, googleUser} = googleLogin;
   const {signIn} = useGoogleLogin({
     clientId:Config.googleClientId, 
-    isSignedIn:true, 
-    // responseType:'code',
-    onSuccess:response => initSession(response.profileObj)});
+    // isSignedIn:true, 
+    responseType:'code',
+    // onSuccess:response => initSession(response.profileObj)
+    onSuccess:response => initSession(response)
+  });
   const {signOut } = useGoogleLogout({clientId:Config.googleClientId})
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [user, setUser] = useState(null);
@@ -65,13 +68,32 @@ export default function App() {
   //   })
   // }
 
-  const initSession = (profileObj) =>{
-    setIsSignedIn(true);
-    axios.get(apiHost + '/api/users?email=' + profileObj.email).then(res => {
-      const taUser = res.data;
-      taUser.imageUrl = profileObj.imageUrl;
-      setUser(taUser)
+  // const initSession = (profileObj) =>{
+  //   setIsSignedIn(true);
+  //   axios.get(apiHost + '/api/users?email=' + profileObj.email).then(res => {
+  //     const taUser = res.data;
+  //     taUser.imageUrl = profileObj.imageUrl;
+  //     setUser(taUser)
       
+  //     taUser.workspaces.forEach(scheme => {
+  //       scheme.start_date = new Date(scheme.start_date);
+  //       scheme.end_date = new Date(scheme.end_date);
+  //     })
+
+  //     setWorkspaces(taUser.workspaces);
+  //   })
+  // }
+
+  const initSession = (response) =>{
+    // setIsSignedIn(true);
+    console.log(response)
+
+    axios.post(apiHost + '/api/auth',{code:response.code}).then(res => {
+      setIsSignedIn(true)
+      const taUser = res.data;
+      // taUser.imageUrl = profileObj.imageUrl;
+      setUser(taUser)
+      console.log(taUser)
       taUser.workspaces.forEach(scheme => {
         scheme.start_date = new Date(scheme.start_date);
         scheme.end_date = new Date(scheme.end_date);
@@ -95,7 +117,7 @@ export default function App() {
 
   const apiRequestOptions = () => ({
     headers:{
-      'Authorization': 'bearer ' + user.id
+      'x-access-token':  user.token
     }
   })
 
@@ -134,6 +156,7 @@ export default function App() {
   // }, [isSignedIn])
 
   useEffect(() => {
+    // console.log(workspaces)
     setActiveWorkspace(workspaces.find(scheme => scheme.is_default))
   }, [workspaces])
 
